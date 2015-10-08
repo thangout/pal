@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * @author Thang Do
  */
 public class Main {
-
+	
 	static Node[] edges;
 	public static void main(String[] args) throws IOException {
 		try {
