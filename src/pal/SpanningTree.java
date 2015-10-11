@@ -18,11 +18,16 @@ public class SpanningTree {
 	ArrayList<Node> visited;
 	int weightSTP = 0;
 	ArrayList<Edge> sptEdges;
+	Edge toRemoveEdge;
+	ArrayList<Edge> firstComponent;
+	ArrayList<Edge> secondComponent;
 
 	public SpanningTree(Node[] nodes) {
 		this.nodes = nodes;
 		this.visited = new ArrayList<Node>();
 		this.sptEdges = new ArrayList<>();
+		this.firstComponent = new ArrayList();
+		this.secondComponent = new ArrayList();
 	}
 
 	public void makeSpanningTree() {
@@ -79,6 +84,7 @@ public class SpanningTree {
 		}
 //		System.out.println(bestCandidate.name + " - cheapset->" + bestPrice);
 		makeEdgeSPT(bestEdge);
+		saveEdgeToRemove(bestEdge);
 		return bestCandidate;
 	}
 
@@ -99,5 +105,102 @@ public class SpanningTree {
 			cost += sptEdges.get(i).getPrice();
 		}
 		return cost;
+	}
+
+	private void saveEdgeToRemove(Edge edge) {
+		if (toRemoveEdge == null) {
+			toRemoveEdge = edge;
+		} else {
+			if (edge.getPrice() < toRemoveEdge.getPrice()) {
+				toRemoveEdge = edge;
+			}
+
+		}
+	}
+
+	private void removeCheapestEdge() {
+		sptEdges.remove(toRemoveEdge);
+		System.out.println("removing edge with price: " + toRemoveEdge.price);
+	}
+
+	public void findComponent() {
+		removeCheapestEdge();
+		Node fromNode = toRemoveEdge.getFromNode();
+		Node toNode = toRemoveEdge.getToNode();
+//		for (int i = 0; i < sptEdges.size(); i++) {
+//			if (sptEdges.get(i).getToNode() == fromNode) {
+//				firstComponent.add(sptEdges.get(i));
+//				sptEdges.remove(i);
+//			}
+//
+////		}
+		findPrec(fromNode, firstComponent);
+		findAfter(fromNode, firstComponent);
+//		findPrec(toNode, secondComponent);
+//		findAfter(toNode, secondComponent);
+	}
+
+	private void findPrec(Node node, ArrayList<Edge> component) {
+//		ArrayList<Edge> precEdges = new ArrayList<>();
+		for (int i = 0; i < sptEdges.size(); i++) {
+			if (sptEdges.get(i).getToNode() == node) {
+//				precEdges.add(edges.get(i));
+//				findPrec(sptEdges, edges.get(i).fromNode);
+				component.add(sptEdges.get(i));
+				findPrec(sptEdges.get(i).getFromNode(), component);
+//				sptEdges.remove(i);
+			}
+		}
+	}
+
+	private void findAfter(Node node, ArrayList<Edge> component) {
+		for (int i = 0; i < sptEdges.size(); i++) {
+			if (sptEdges.get(i).getFromNode() == node && !component.contains(sptEdges.get(i))) {
+				component.add(sptEdges.get(i));
+				findAfter(sptEdges.get(i).getToNode(), component);
+//				sptEdges.remove(i);
+			}
+		}
+	}
+
+	public ArrayList searchSusbtiteEdges(long c1, long c2) {
+		ArrayList<Edge> subsEdges = new ArrayList<>();
+		for (int i = 0; i < nodes.length; i++) {
+			ArrayList<Edge> edges = nodes[i].getEdgesOut();
+			for (int j = 0; j < edges.size(); j++) {
+				Edge it = edges.get(j);
+				if (it.getPrice() <= c2 && it.getPrice() >= c1
+					&& !it.isInSPT() && !containsComponent(it.getFromNode(), it.getToNode())) {
+					subsEdges.add(it);
+				}
+			}
+		}
+			
+		return subsEdges;
+	}
+
+	public void dumpFirstComponent() {
+		System.out.println("___Dumping component 1");
+		for (int i = 0; i < firstComponent.size(); i++) {
+			System.out.println(firstComponent.get(i).getPrice());
+		}
+	}
+
+	public void dumpSecondComponent() {
+		System.out.println("___Dumping component 2");
+		for (int i = 0; i < secondComponent.size(); i++) {
+			System.out.println(secondComponent.get(i).getPrice());
+		}
+	}
+
+	private boolean containsComponent(Node to, Node from) {
+		for (int i = 0; i < firstComponent.size(); i++) {
+			Edge it = firstComponent.get(i);
+			if ((it.getFromNode() == from && it.getToNode() != to)
+				|| (it.getFromNode() != from && it.getToNode() == to)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
