@@ -18,8 +18,9 @@ import java.util.logging.Logger;
  * @author Thang Do
  */
 public class Main {
-	
-	static Node[] edges;
+
+	static Node[] nodes;
+
 	public static void main(String[] args) throws IOException {
 		try {
 			BufferedReader in = new BufferedReader(new FileReader("pub03.in"));
@@ -32,22 +33,42 @@ public class Main {
 			int c1 = Integer.valueOf(tokenizer.nextToken());
 			int c2 = Integer.valueOf(tokenizer.nextToken());
 
-			edges = new Node[numOfConnections];
+			nodes = new Node[numOfBuildings];
 
-			while(firstLine != null){
-				firstLine = in.readLine();
-				System.out.println(firstLine);
+			while ((firstLine = in.readLine()) != null) {
+//				System.out.println(firstLine);
 				tokenizer = new StringTokenizer(firstLine);
 
 				// basic connection info 
-				int b1 = Integer.valueOf(tokenizer.nextToken());
-				int b2 = Integer.valueOf(tokenizer.nextToken());
+				int ib1 = Integer.valueOf(tokenizer.nextToken());
+				int ib2 = Integer.valueOf(tokenizer.nextToken());
 				int price = Integer.valueOf(tokenizer.nextToken());
+
+				if (nodes[ib1] == null) {
+					nodes[ib1] = new Node(ib1);
+				}
+				if (nodes[ib2] == null) {
+					nodes[ib2] = new Node(ib2);
+				}
+				nodes[ib1].addNeighbour(nodes[ib2], price);
+				nodes[ib1].addEdgeOut(nodes[ib1],nodes[ib2], price);
 			}
 
 		} catch (FileNotFoundException ex) {
 			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
 		}
+
+		System.out.println("____Printint neihbours");
+		for (int i = 0; i < nodes.length; i++) {
+//			nodes[i].printNeighbours();
+		}
+		System.out.println("____Print STP");
+		SpanningTree spt = new SpanningTree(nodes);
+		spt.makeSpanningTree();
+		spt.printSPT(nodes[0]);
 	}
 
+	public void spannigTree(Node[] nodes) {
+
+	}
 }

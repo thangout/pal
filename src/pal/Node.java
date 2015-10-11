@@ -3,8 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package pal;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 /**
  *
@@ -12,26 +16,48 @@ package pal;
  */
 public class Node {
 
-	int b1;
-	int b2;
-	int price;
+	int name;
+	HashMap neighbours;
+	ArrayList<Edge> edgesOut;
 
-	public Node(int b1, int b2, int price) {
-		this.b1 = b1;
-		this.b2 = b2;
-		this.price = price;
+	// is in spanning tree
+	boolean inST;
+
+	public Node(int b1) {
+		this.name = b1;
+		this.neighbours = new HashMap<Node, Integer>();
+		this.edgesOut = new ArrayList<>();
 	}
 
-	public int getB1() {
-		return b1;
+	public void addNeighbour(Node neighbour, int price) {
+		neighbours.put(neighbour, price);
 	}
 
-	public int getB2() {
-		return b2;
+	public HashMap getNeighbours() {
+		return neighbours;
 	}
 
-	public int getPrice() {
-		return price;
+	public void addEdgeOut(Node from, Node to, long price) {
+		edgesOut.add(new Edge(from, to, price));
 	}
 
+	public void printNeighbours() {
+		Iterator ite = neighbours.entrySet().iterator();
+		while (ite.hasNext()) {
+			Entry<Node, Integer> item = (Entry<Node, Integer>) ite.next();
+			System.out.println(this.name + " " + item.getKey().name + " " + item.getValue());
+		}
+	}
+
+	public boolean isInST() {
+		return inST;
+	}
+
+	public void setInST(boolean inST) {
+		this.inST = inST;
+	}
+
+	public ArrayList<Edge> getEdgesOut() {
+		return edgesOut;
+	}
 }
