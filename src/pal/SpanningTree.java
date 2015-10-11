@@ -16,10 +16,13 @@ public class SpanningTree {
 
 	Node[] nodes;
 	ArrayList<Node> visited;
+	int weightSTP = 0;
+	ArrayList<Edge> sptEdges;
 
 	public SpanningTree(Node[] nodes) {
 		this.nodes = nodes;
 		this.visited = new ArrayList<Node>();
+		this.sptEdges = new ArrayList<>();
 	}
 
 	public void makeSpanningTree() {
@@ -47,7 +50,7 @@ public class SpanningTree {
 			Iterator ite = visited.get(i).getEdgesOut().iterator();
 			while (ite.hasNext()) {
 				Edge item = (Edge) ite.next();
-				if (!containsVisited(item.getToNode())) {
+				if (!containsVisited(item.getToNode()) && !item.isInSPT()) {
 					potEdges.add(item);
 				}
 			}
@@ -81,21 +84,20 @@ public class SpanningTree {
 
 	private void makeEdgeSPT(Edge edge) {
 		edge.setInSPT(true);
+		sptEdges.add(edge);
 	}
 
 	public void printSPT(Node node) {
-//		for (int i = 0; i < nodes.length; i++) {
-//			if (nodes[i].isInST()) {
-//				System.out.println("is in SPT - "+nodes[i].name);
-//			}
-//		}
-		Iterator ite = node.getEdgesOut().iterator();
-		while (ite.hasNext()) {
-			Edge item = (Edge) ite.next();
-			printSPT(item.getToNode());
-			if (item.isInSPT()) {
-				System.out.println(item.getFromNode().name + "--(" + item.getPrice() + ")-->" + item.getToNode().name);
-			}
+		for (int i = 0; i < sptEdges.size(); i++) {
+			System.out.println(sptEdges.get(i).getFromNode().name + "--(" + sptEdges.get(i).getPrice() + ")-->" + sptEdges.get(i).getToNode().name);
 		}
+	}
+
+	public long getSPTcost() {
+		long cost = 0;
+		for (int i = 0; i < sptEdges.size(); i++) {
+			cost += sptEdges.get(i).getPrice();
+		}
+		return cost;
 	}
 }

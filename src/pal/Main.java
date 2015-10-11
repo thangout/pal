@@ -51,21 +51,18 @@ public class Main {
 					nodes[ib2] = new Node(ib2);
 				}
 				nodes[ib1].addNeighbour(nodes[ib2], price);
-				nodes[ib1].addEdgeOut(nodes[ib1],nodes[ib2], price);
+				nodes[ib1].addEdgeOut(nodes[ib1], nodes[ib2], price);
 			}
 
 		} catch (FileNotFoundException ex) {
 			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
-		System.out.println("____Printint neihbours");
-		for (int i = 0; i < nodes.length; i++) {
-//			nodes[i].printNeighbours();
-		}
 		System.out.println("____Print STP");
 		SpanningTree spt = new SpanningTree(nodes);
 		spt.makeSpanningTree();
 		spt.printSPT(nodes[0]);
+		System.out.println(spt.getSPTcost());
 	}
 
 	public void spannigTree(Node[] nodes) {
