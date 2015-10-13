@@ -120,7 +120,7 @@ public class SpanningTree {
 
 	private void removeCheapestEdge() {
 		sptEdges.remove(toRemoveEdge);
-		System.out.println("removing edge with price: " + toRemoveEdge.price);
+//		System.out.println("removing edge with price: " + toRemoveEdge.price);
 	}
 
 	public void findComponent() {
@@ -170,12 +170,14 @@ public class SpanningTree {
 			for (int j = 0; j < edges.size(); j++) {
 				Edge it = edges.get(j);
 				if (it.getPrice() <= c2 && it.getPrice() >= c1
-					&& !it.isInSPT() && !containsComponent(it.getFromNode(), it.getToNode())) {
+					&& !it.isInSPT() && !containsComponent(it.getFromNode(), it.getToNode(), firstComponent)) {
+					if (it.getFromNode().name < it.getToNode().name) {
+					}
 					subsEdges.add(it);
 				}
 			}
 		}
-			
+
 		return subsEdges;
 	}
 
@@ -193,9 +195,9 @@ public class SpanningTree {
 		}
 	}
 
-	private boolean containsComponent(Node to, Node from) {
-		for (int i = 0; i < firstComponent.size(); i++) {
-			Edge it = firstComponent.get(i);
+	private boolean containsComponent(Node to, Node from, ArrayList<Edge> component) {
+		for (int i = 0; i < component.size(); i++) {
+			Edge it = component.get(i);
 			if ((it.getFromNode() == from && it.getToNode() != to)
 				|| (it.getFromNode() != from && it.getToNode() == to)) {
 				return false;
