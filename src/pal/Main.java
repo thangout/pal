@@ -6,14 +6,9 @@
 package pal;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -27,7 +22,7 @@ public class Main {
 		int c1 = 0;
 		int c2 = 0;
 //		System.out.println("135\n0 1 28\n1 5 26\n10 14 25");
-		BufferedReader in = new BufferedReader(new FileReader("pub02.in"));
+		BufferedReader in = new BufferedReader(new FileReader("pub01.in"));
 //			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String firstLine = in.readLine();
 
@@ -55,8 +50,16 @@ public class Main {
 		System.out.println(spt.getMSTWeight());
 		for (int i = 1; i < spt.parrents.length; i++) {
 			System.out.println(spt.parrents[i] + " " + i + " " + graph[i][spt.parrents[i]]);
-			
 		}
+
+		int indexMinEdge = spt.findMinEdge();
+		System.out.println(indexMinEdge);
+		System.out.println("Deleting: " + spt.parrents[indexMinEdge] + " - " + indexMinEdge + " -> " + graph[indexMinEdge][spt.parrents[indexMinEdge]]);
+
+		spt.removeCheapestEdge();
+
+		spt.dfs(0);
+		System.out.println(spt.getMSTWeight());
 	}
 
 }
