@@ -24,9 +24,13 @@ public class MinST {
 	long[][] graph;
 
 	boolean[][] firstComponent;
+	boolean[][] inverseComponent;
 	int[] componentParent;
 
 	boolean[][] officialMST;
+
+	//hrany které lze vyměnit
+	int[] results;
 
 	public MinST(long[][] graph) {
 		mstSet = new boolean[graph.length];
@@ -36,6 +40,8 @@ public class MinST {
 		this.firstComponent = new boolean[graph.length][graph.length];
 		this.componentParent = new int[graph.length];
 		officialMST = new boolean[graph.length][graph.length];
+		results = new int[graph.length];
+		inverseComponent = new boolean[graph.length][graph.length];
 		prim();
 	}
 
@@ -93,6 +99,8 @@ public class MinST {
 				weight += graph[i][parrents[i]];
 				officialMST[i][parrents[i]] = true;
 				officialMST[parrents[i]][i] = true;
+				inverseComponent[i][parrents[i]] = true;
+				inverseComponent[parrents[i]][i] = true;
 			}
 		}
 		return weight;
@@ -124,12 +132,13 @@ public class MinST {
 //			if (parrents[i] == -1) {
 //					
 //			}
-			System.out.println(isOfficialMST(index,i));
-			if (isOfficialMST(index, i) && firstComponent[index][i] == false && firstComponent[i][index] == false
-//				&& graph[index][parrents[i]] >= 0) {
+//			System.out.println(isOfficialMST(index, i));
+			if (isOfficialMST(index, i) && firstComponent[index][i] == false && firstComponent[i][index] == false //				&& graph[index][parrents[i]] >= 0) {
 				) {
 				firstComponent[index][i] = true;
 				firstComponent[i][index] = true;
+				inverseComponent[index][i] = false;
+				inverseComponent[i][index] = false;
 				dfs(i);
 			}
 //			if (parrents[i] >= 0) {
@@ -152,6 +161,8 @@ public class MinST {
 		int i = findMinEdge();
 		officialMST[i][parrents[i]] = false;
 		officialMST[parrents[i]][i] = false;
+		inverseComponent[i][parrents[i]] = false;
+		inverseComponent[parrents[i]][i] = false;
 //		graph[i][parrents[i]] = -4;
 //		graph[parrents[i]][i] = -4;
 //		mstSet[i] = false;
@@ -159,7 +170,17 @@ public class MinST {
 	}
 
 	void findPotentialEdges(long c1, long c2) {
+		for (int i = 0; i < graph.length; i++) {
+			for (int j = i; j < graph.length; j++) {
+				if (!isNotInComponent(i, j)) {
+					if (graph[i][j] >= c1 && graph[i][j] <= c2) {
+						results[i] = j;
+						System.out.println("aloh");
+					}
+				}
 
+			}
+		}
 	}
 
 	boolean checkMSTEdge(long weight) {
@@ -175,6 +196,23 @@ public class MinST {
 
 	boolean isOfficialMST(int i1, int i2) {
 		return officialMST[i1][i2] || officialMST[i2][i1];
+	}
+
+	private boolean isNotInComponent(int i1, int j1) {
+//		for (int k = 0; k < graph.length; k++) {
+//			if (firstComponent[i1][k] == true && firstComponent[j1][k] == false) {
+//				return false;
+//			}
+//		}
+		if (firstComponent[i1][j1] == false && inverseComponent[i1][j1] == false) {
+			return false;
+		} 
+//		else if (firstComponent[i][j] == false && inverseComponent[i][j] == true) {
+//			return false;
+//		}
+		for (int i = 0; i < graph.length; i++) {
+		}
+		return true;
 	}
 
 }

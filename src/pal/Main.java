@@ -49,17 +49,23 @@ public class Main {
 
 		System.out.println(spt.getMSTWeight());
 		for (int i = 1; i < spt.parrents.length; i++) {
-			System.out.println(spt.parrents[i] + " " + i + " " + graph[i][spt.parrents[i]]);
+//			System.out.println(spt.parrents[i] + " " + i + " " + graph[i][spt.parrents[i]]);
 		}
 
 		int indexMinEdge = spt.findMinEdge();
-		System.out.println(indexMinEdge);
+//		System.out.println(indexMinEdge);
 		System.out.println("Deleting: " + spt.parrents[indexMinEdge] + " - " + indexMinEdge + " -> " + graph[indexMinEdge][spt.parrents[indexMinEdge]]);
 
 		spt.removeCheapestEdge();
-
 		spt.dfs(0);
-		System.out.println(spt.getMSTWeight());
+		spt.findPotentialEdges(c1, c2);
+		for (int i = 0; i < graph.length; i++) {
+			if (spt.results[i] > 0) {
+				System.out.println(i + " " + spt.results[i] + " " + graph[i][spt.results[i]]);
+			}
+
+		}
+
 	}
 
 }
