@@ -13,22 +13,16 @@ public class MinST {
 
 	//pole booleanu jestli jestli je vert v spt nebo neni
 	boolean[] mstSet;
-
 	//pole rodicu - ulozeni indexů rodiču
 	int[] parrents;
-
 	//pole vah k jednotlivým uzlům
 	long[] keys;
-
 	//graf
 	long[][] graph;
-
 	boolean[][] firstComponent;
 	boolean[][] inverseComponent;
 	int[] componentParent;
-
 	boolean[][] officialMST;
-
 	//hrany které lze vyměnit
 	int[] results;
 
@@ -119,7 +113,6 @@ public class MinST {
 	}
 
 	public void walkDFS() {
-
 	}
 
 	public void dfs(int index) {
@@ -172,10 +165,10 @@ public class MinST {
 	void findPotentialEdges(long c1, long c2) {
 		for (int i = 0; i < graph.length; i++) {
 			for (int j = i; j < graph.length; j++) {
-				if (!isNotInComponent(i, j)) {
-					if (graph[i][j] >= c1 && graph[i][j] <= c2) {
+				if (graph[i][j] >= c1 && graph[i][j] <= c2) {
+					if (!isNotInComponent(i, j)) {
 						results[i] = j;
-						System.out.println("aloh");
+//						System.out.println("aloh");
 					}
 				}
 
@@ -204,15 +197,82 @@ public class MinST {
 //				return false;
 //			}
 //		}
-		if (firstComponent[i1][j1] == false && inverseComponent[i1][j1] == false) {
-			return false;
-		} 
+		boolean leftCom = true;
+		boolean rightCom = true;
+		System.out.println("check " + i1 + " " + j1);
+		//check different verts 
+		for (int i = 0; i < graph.length; i++) {
+			if (firstComponent[i1][i] == true || firstComponent[i][j1]) {
+				leftCom = false;
+			}
+			if (inverseComponent[j1][i] == true || inverseComponent[i][i1]) {
+				rightCom = false;
+			}
+		}
+		//check for same component
+		boolean sameLeftComponent = true;
+		boolean sameRightComponent = true;
+//		for (int i = 0; i < graph.length; i++) {
+//			if (firstComponent[i1][i] == true) {
+//				sameLeftComponent = false;
+//			}
+//			if (firstComponent[j1][i] == true) {
+//				sameRightComponent = true;
+//			}
+//
+//			if (inverseComponent[i1][i] == true) {
+//				sameRightComponent = false;
+//			}
+//			if (inverseComponent[j1][i] == true) {
+//				sameRightComponent = true;
+//			}
+//
+//		}
+
+		for (int i = 0; i < graph.length; i++) {
+			if (firstComponent[i1][i] == true && firstComponent[i][j1]) {
+				sameLeftComponent = false;
+			}
+			if (inverseComponent[j1][i] == true || inverseComponent[i][i1]) {
+				sameRightComponent = false;
+			}
+		}
+//		if (firstComponent[i1][j1] == false && inverseComponent[i1][j1] == false) {
+//			return false;
+//		}
 //		else if (firstComponent[i][j] == false && inverseComponent[i][j] == true) {
 //			return false;
 //		}
+//		return leftCom && rightCom && sameLeftComponent && sameRightComponent;
+//		return leftCom && rightCom;
+		boolean a = false;
+		boolean b = false;
+		boolean c = false;
+		boolean d = false;
 		for (int i = 0; i < graph.length; i++) {
+			if (firstComponent[i1][i] == true) {
+				a = true;
+			}
+			if (firstComponent[j1][i] == true) {
+				b = true;
+			}
 		}
-		return true;
-	}
 
+		for (int i = 0; i < graph.length; i++) {
+			if (inverseComponent[i1][i] == true) {
+				c = true;
+			}
+			if (inverseComponent[j1][i] == true) {
+				d = true;
+			}
+
+		}
+
+		if (c && d) {
+			return true;
+		} else if (a && b) {
+			return true;
+		}
+		return false;
+	}
 }
