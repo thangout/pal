@@ -24,7 +24,10 @@ public class MinST {
 	int[] componentParent;
 	boolean[][] officialMST;
 	//hrany které lze vyměnit
-	int[] results;
+	int[][] results;
+
+	boolean[] firstComponentD1;
+	boolean[] inverseComponentD1;
 
 	public MinST(long[][] graph) {
 		mstSet = new boolean[graph.length];
@@ -34,8 +37,13 @@ public class MinST {
 		this.firstComponent = new boolean[graph.length][graph.length];
 		this.componentParent = new int[graph.length];
 		officialMST = new boolean[graph.length][graph.length];
-		results = new int[graph.length];
+		results = new int[graph.length][graph.length];
 		inverseComponent = new boolean[graph.length][graph.length];
+
+
+		firstComponentD1 = new boolean[graph.length];
+		inverseComponentD1 = new boolean[graph.length];
+
 		prim();
 	}
 
@@ -91,10 +99,16 @@ public class MinST {
 		for (int i = 1; i < parrents.length; i++) {
 			if (parrents[i] >= 0) {
 				weight += graph[i][parrents[i]];
+				//only init 
 				officialMST[i][parrents[i]] = true;
 				officialMST[parrents[i]][i] = true;
 				inverseComponent[i][parrents[i]] = true;
 				inverseComponent[parrents[i]][i] = true;
+
+//				inverseComponentD1[i] = true; 
+//				inverseComponentD1[parrents[i]] = true;
+
+				
 			}
 		}
 		return weight;
@@ -132,6 +146,13 @@ public class MinST {
 				firstComponent[i][index] = true;
 				inverseComponent[index][i] = false;
 				inverseComponent[i][index] = false;
+
+				firstComponentD1[index] = true;
+				firstComponentD1[i] = true;
+				
+//				inverseComponentD1[i] = false;
+//				inverseComponentD1[index] = false;
+				
 				dfs(i);
 			}
 //			if (parrents[i] >= 0) {
@@ -156,10 +177,17 @@ public class MinST {
 		officialMST[parrents[i]][i] = false;
 		inverseComponent[i][parrents[i]] = false;
 		inverseComponent[parrents[i]][i] = false;
-//		graph[i][parrents[i]] = -4;
-//		graph[parrents[i]][i] = -4;
-//		mstSet[i] = false;
-		parrents[0] = 0;
+
+		//newlines
+//		firstComponent[i][parrents[i]] = false;
+//		firstComponent[parrents[i]][i] = false;
+//
+//		firstComponentD1[i] = false;
+//		firstComponentD1[parrents[i]] = false;
+//
+//		inverseComponentD1[i] = false;
+//		inverseComponentD1[parrents[i]] = false;
+//		parrents[0] = 0;
 	}
 
 	void findPotentialEdges(long c1, long c2) {
@@ -167,7 +195,7 @@ public class MinST {
 			for (int j = i; j < graph.length; j++) {
 				if (graph[i][j] >= c1 && graph[i][j] <= c2) {
 					if (!isNotInComponent(i, j)) {
-						results[i] = j;
+						results[i][j] = 1;
 //						System.out.println("aloh");
 					}
 				}
@@ -199,7 +227,6 @@ public class MinST {
 //		}
 		boolean leftCom = true;
 		boolean rightCom = true;
-		System.out.println("check " + i1 + " " + j1);
 		//check different verts 
 		for (int i = 0; i < graph.length; i++) {
 			if (firstComponent[i1][i] == true || firstComponent[i][j1]) {
@@ -268,11 +295,30 @@ public class MinST {
 
 		}
 
-		if (c && d) {
-			return true;
-		} else if (a && b) {
-			return true;
+//		if (c && d) {
+//			return true;
+//		} else if (a && b) {
+//			return true;
+//		}
+//		System.out.println("check " + i1 + " " + j1);
+		if(firstComponentD1[i1] && firstComponentD1[j1]){
+//			System.out.println(i1 + " " + j1 + "are in component1");
+			return true;	
 		}
+		if(inverseComponentD1[i1] && inverseComponentD1[j1]){
+//			System.out.println(i1 + " " + j1 + "are in inverseComponent");
+			return true;	
+		}
+
 		return false;
+	}
+
+	public void makeInverseComponentD1(){
+		for (int i = 0; i < graph.length; i++) {
+			if(!firstComponentD1[i]){
+				inverseComponentD1[i] = true;	
+			}
+			
+		}
 	}
 }

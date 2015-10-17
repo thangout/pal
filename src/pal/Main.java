@@ -26,8 +26,8 @@ public class Main {
 		int c2 = 0;
 		int numOfBuildings = 0;
 		//		System.out.println("135\n0 1 28\n1 5 26\n10 14 25");
-		BufferedReader in = new BufferedReader(new FileReader("pub04.in"));
-//		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+//		BufferedReader in = new BufferedReader(new FileReader("pub04.in"));
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String firstLine = in.readLine();
 
 		// Get basic information c1 and c2 are criterias 
@@ -60,14 +60,20 @@ public class Main {
 
 		int indexMinEdge = spt.findMinEdge();
 		//		System.out.println(indexMinEdge);
-				System.out.println("Deleting: " + spt.parrents[indexMinEdge] + " - " + indexMinEdge + " -> " + graph[indexMinEdge][spt.parrents[indexMinEdge]]);
+//		System.out.println("Deleting: " + spt.parrents[indexMinEdge] + " - " + indexMinEdge + " -> " + graph[indexMinEdge][spt.parrents[indexMinEdge]]);
 
 		spt.removeCheapestEdge();
 		spt.dfs(0);
+		spt.makeInverseComponentD1();
 		spt.findPotentialEdges(c1, c2);
 		for (int i = 0; i < graph.length; i++) {
-			if (spt.results[i] > 0) {
-				System.out.println(i + " " + spt.results[i] + " " + graph[i][spt.results[i]]);
+			for (int j = i; j < graph.length; j++) {
+				if (graph[i][j] == graph[indexMinEdge][spt.parrents[indexMinEdge]]) {
+				continue;
+				}
+				if (spt.results[i][j] > 0) {
+					System.out.println(i + " " + j + " " + graph[i][j]);
+				}
 			}
 
 		}
