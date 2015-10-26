@@ -29,9 +29,14 @@ public class Predecessor {
 			int column = topologicalOrder[i];
 			for (int j = 0; j < graph.length; j++) {
 				//vede do uzlu hrana?
+				//iteruju pres radky
 				if (graph[j][column]) {
 					addPredOfNode(j, column);
+					//pridani primeho predchudce
 					predeccesor[column][j] = true;
+					
+					//jedna se vlastne o transponovani puvodni pred matice
+					//tim ziskam nasledniky
 					successor[j][column] = true;
 				}
 			}
@@ -42,6 +47,8 @@ public class Predecessor {
 		for (int i = 0; i < graph.length; i++) {
 			if (predeccesor[from][i]) {
 				predeccesor[to][i] = true;
+				//jedna se vlastne o transponovani puvodni pred matice
+				//tim ziskam nasledniky
 				successor[i][to] = true;
 			}
 		}
