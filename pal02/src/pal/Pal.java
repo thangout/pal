@@ -20,7 +20,8 @@ public class Pal {
 	/**
 	 * @param args the command line arguments
 	 */
-	static long[][] graph;
+	static boolean[][] graph;
+	static boolean[][] graphReversed;
 	static long[] weight;
 
 	public static void main(String[] args) throws IOException {
@@ -36,8 +37,10 @@ public class Pal {
 			numOfConnections = Integer.valueOf(tokenizer.nextToken());
 		}
 
-		graph = new long[numOfBuildings][numOfBuildings];
+		graph = new boolean[numOfBuildings][numOfBuildings];
+		graphReversed = new boolean[numOfBuildings][numOfBuildings];
 		weight = new long[numOfBuildings];
+		
 		for (int i = 0; i < numOfBuildings; i++) {
 			firstLine = in.readLine();
 			tokenizer = new StringTokenizer(firstLine);
@@ -49,9 +52,16 @@ public class Pal {
 			tokenizer = new StringTokenizer(firstLine);
 			int ib1 = Integer.valueOf(tokenizer.nextToken());
 			int ib2 = Integer.valueOf(tokenizer.nextToken());
-			graph[ib1][ib2] = 1;
+			graph[ib1][ib2] = true;
+			graphReversed[ib2][ib1] = true;
 		}
 		in.close();
+
+		TopologicalOrder to = new TopologicalOrder(graph);
+		to.createTopologicalOrder();
+
+		Predecessor pred = new Predecessor(graph, graphReversed, to.topoOrder);
+		pred.createPredecessor();
 	}
 
 }
