@@ -14,12 +14,14 @@ public class Predecessor {
 	boolean[][] graph;
 	boolean[][] graphReversed;
 	boolean[][] predeccesor;
+	boolean[][] successor;
 
 	public Predecessor(boolean[][] graph, boolean[][] graphReversed, int[] topologicalOrder) {
 		this.topologicalOrder = topologicalOrder;
 		this.graph = graph;
 		this.graphReversed = graphReversed;
 		predeccesor = new boolean[graph.length][graph.length];
+		successor = new boolean[graph.length][graph.length];
 	}
 
 	public void createPredecessor() {
@@ -30,14 +32,9 @@ public class Predecessor {
 				if (graph[j][column]) {
 					addPredOfNode(j, column);
 					predeccesor[column][j] = true;
+					successor[j][column] = true;
 				}
 			}
-		}
-	}
-
-	private void findDirectPred(int index) {
-		for (int i = 0; i < 10; i++) {
-
 		}
 	}
 
@@ -45,6 +42,7 @@ public class Predecessor {
 		for (int i = 0; i < graph.length; i++) {
 			if (predeccesor[from][i]) {
 				predeccesor[to][i] = true;
+				successor[i][to] = true;
 			}
 		}
 	}
