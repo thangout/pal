@@ -24,6 +24,10 @@ public class Main {
 	static boolean[][] graphReversed;
 	static long[] weight;
 
+	static int[] fromEdge;
+	static int[] toEdge;
+	static int edgePointer;
+
 	public static void main(String[] args) throws IOException {
 		int numOfBuildings = 0;
 		int numOfConnections = 0;
@@ -40,7 +44,9 @@ public class Main {
 		graph = new boolean[numOfBuildings][numOfBuildings];
 //		graphReversed = new boolean[numOfBuildings][numOfBuildings];
 		weight = new long[numOfBuildings];
-		
+		fromEdge = new int[numOfConnections];
+		toEdge = new int[numOfConnections];
+
 		for (int i = 0; i < numOfBuildings; i++) {
 			firstLine = in.readLine();
 			tokenizer = new StringTokenizer(firstLine);
@@ -53,17 +59,20 @@ public class Main {
 			int ib1 = Integer.valueOf(tokenizer.nextToken());
 			int ib2 = Integer.valueOf(tokenizer.nextToken());
 			graph[ib1][ib2] = true;
-//			graphReversed[ib2][ib1] = true;
+
+			fromEdge[edgePointer] = ib1;
+			toEdge[edgePointer] = ib2;
+			edgePointer++;
 		}
 		in.close();
 
 		TopologicalOrder to = new TopologicalOrder(graph);
 		to.createTopologicalOrder();
 
-		Predecessor pred = new Predecessor(graph, graphReversed, to.topoOrder);
+		Predecessor pred = new Predecessor(graph, graphReversed, to.topoOrder, fromEdge, toEdge);
 		pred.createPredecessor();
 
-		ReverseEdge reverse = new ReverseEdge(graph, pred.predeccesor, pred.successor, weight);
+		ReverseEdge reverse = new ReverseEdge(graph, pred.predeccesor, pred.successor, weight, fromEdge, toEdge);
 		reverse.findEdge();
 	}
 

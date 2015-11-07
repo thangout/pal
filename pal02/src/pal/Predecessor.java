@@ -16,12 +16,18 @@ public class Predecessor {
 	boolean[][] predeccesor;
 	boolean[][] successor;
 
-	public Predecessor(boolean[][] graph, boolean[][] graphReversed, int[] topologicalOrder) {
+	int[] fromEdge;
+	int[] toEdge;
+
+	public Predecessor(boolean[][] graph, boolean[][] graphReversed, int[] topologicalOrder, int[] from, int[] to) {
 		this.topologicalOrder = topologicalOrder;
 		this.graph = graph;
 		this.graphReversed = graphReversed;
 		predeccesor = new boolean[graph.length][graph.length];
 		successor = new boolean[graph.length][graph.length];
+		
+		this.fromEdge = from;
+		this.toEdge = to;
 	}
 
 	public void createPredecessor() {
