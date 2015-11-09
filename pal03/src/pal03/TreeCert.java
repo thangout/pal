@@ -45,8 +45,6 @@ public class TreeCert {
 			}
 			if (degree == 1) {
 				leaves[i] = true;
-				//inicializace listů
-//				certs[i].add("01");
 			}
 		}
 		return leaves;
@@ -54,7 +52,7 @@ public class TreeCert {
 
 	public int findParrent(int index, boolean[][] graph) {
 		for (int i = 0; i < graph.length; i++) {
-			if (graph[index][i]) {
+			if (graph[index][i] && !closed[i]) {
 				return i;
 			}
 		}
@@ -80,19 +78,26 @@ public class TreeCert {
 				}
 			}
 			int parrentCounter = 0;
+			int lastNodeIndex = -1;
 			for (int i = 0; i < graph.length; i++) {
 				if (parrents[i]) {
 					makeCertForParrent(i);
 					parrentCounter++;
+					lastNodeIndex = i;
 				}
 			}
+			if (parrentCounter == 1) {
+				System.out.println("poslední node" + lastNodeIndex);
+			}
+//			System.out.println(graphSize);
 //			System.out.println(parrentCounter);
-			leaves = findLeafs(graph);
 
 			if (nothingLeft) {
 				break;
 			}
-			if (parrentCounter == 2) {
+
+			leaves = findLeafs(graph);
+			if (checkClosed(graph.length) == 2) {
 				System.out.println(makeCert2Left(parrents));
 				break;
 			}
@@ -116,7 +121,7 @@ public class TreeCert {
 		sb.append("1");
 		certs[index].clear();
 		certs[index].add(sb.toString());
-//		System.out.println(index + " " + sb.toString());
+		System.out.println(index + " " + sb.toString());
 	}
 
 	String makeCert2Left(boolean[] parrents) {
@@ -152,5 +157,16 @@ public class TreeCert {
 			}
 
 		}
+	}
+
+	int checkClosed(int size) {
+		int unclosed = 0;
+		for (int i = 0; i < size; i++) {
+			if (!closed[i]) {
+				unclosed++;
+			}
+		}
+		System.out.println("Unclosed " + unclosed);
+		return unclosed;
 	}
 }
