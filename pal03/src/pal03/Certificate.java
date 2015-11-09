@@ -87,7 +87,8 @@ public class Certificate {
 		boolean[] subCert = new boolean[sizeSubCert + 2];
 		int subCertPointer = 1;
 //		Iterator ite = pq.iterator();
-		for (int i = 0; i < pq.size(); i++) {
+		int pqSize = pq.size();
+		for (int i = 0; i < pqSize; i++) {
 			String s = pq.poll();
 //			String s = (String) ite.next();
 			for (int j = 0; j < s.length(); j++) {
@@ -121,7 +122,7 @@ public class Certificate {
 	}
 
 	public void findIsomporh() {
-		boolean[] certA = dfs(0, graphA);
+		boolean[] certA = dfs(1, graphA);
 		printCert(certA);
 		for (int i = 0; i < isList.length; i++) {
 			if (isList[i]) {

@@ -29,7 +29,7 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		// TODO code application logic here
 		int numOfBuildings = 0;
-		BufferedReader in = new BufferedReader(new FileReader("pub01.in"));
+		BufferedReader in = new BufferedReader(new FileReader("pub04.in"));
 //		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String firstLine = in.readLine();
 
@@ -67,33 +67,8 @@ public class Main {
 		}
 		in.close();
 
-//		PriorityQueue<String> pq = new PriorityQueue<>();
-//		pq.add("0011");
-//		pq.add("00111");
-//		System.out.println(pq.poll());
-//		System.out.println(pq.poll());
-//		System.out.println(pq.poll());
-		Certificate cs = new Certificate(graphA, graphB);
-//		boolean[] finalCS = cs.dfs(0);
-//		for (int i = 0; i < finalCS.length; i++) {
-//			if (finalCS[i]) {
-//				System.out.print("1");
-//			} else {
-//				System.out.print("0");
-//			}
-//		}
-//		System.out.println("");
-		
-		cs.findLeafs(0);
-		cs.findIsomporh();
-
-		for (int i = 0; i < cs.isomporhVert.length; i++) {
-			System.out.println("kuk");
-			if (cs.isomporhVert[i]) {
-				System.out.print(i + " ");	
-			}
-			
-		}
+//		Certificate cs = new Certificate(graphA, graphB);
+		TreeCert tc = new TreeCert(graphA, graphB);
+		tc.computeCert(graphA);
 	}
-
 }
