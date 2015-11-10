@@ -19,13 +19,15 @@ public class TreeCert {
 	ArrayList<String>[] certs;
 	boolean[] closed;
 	int root = -1;
+	boolean[] onlyLeaves;
 
 	public TreeCert(boolean[][] graphA, boolean[][] graphB) {
 		this.graphA = graphA;
 		this.graphB = graphB;
 		certs = new ArrayList[graphB.length];
 		this.closed = new boolean[graphB.length];
-//		initCerts();
+		this.onlyLeaves = new boolean[graphB.length];
+		initCerts();
 	}
 
 	private void initCerts() {
@@ -38,13 +40,16 @@ public class TreeCert {
 		boolean[] leaves = new boolean[graph.length];
 		for (int i = 0; i < graph.length; i++) {
 			int degree = 0;
-			for (int j = 0; j < graph.length; j++) {
-				if (graph[i][j] && !closed[j]) {
-					degree++;
+			if (!onlyLeaves[i]) {
+				for (int j = 0; j < graph.length; j++) {
+					if (graph[i][j] && !closed[j]) {
+						degree++;
+					}
 				}
-			}
-			if (degree == 1) {
-				leaves[i] = true;
+				if (degree == 1) {
+					leaves[i] = true;
+					onlyLeaves[i] = true;
+				}
 			}
 		}
 		return leaves;
@@ -61,47 +66,30 @@ public class TreeCert {
 
 	String computeCert(boolean[][] graph, int removeVertIndex) {
 		clearClosed();
-		initCerts();
 		if (removeVertIndex >= 0) {
 			closed[removeVertIndex] = true;
 		}
-		int graphSize = graph.length;
 		String finalCert = null;
 		boolean[] leaves = findLeafs(graph);
 		initLeaves(leaves);
 		while (true) {
-			boolean nothingLeft = true;
 			boolean[] parrents = new boolean[graph.length];
 			for (int i = 0; i < graph.length; i++) {
 				if (leaves[i] && !closed[i]) {
-					nothingLeft = false;
 					int parrentIndex = findParrent(i, graph);
 //					System.out.println("list " + parrentIndex);
 					addCertToParrent(i, parrentIndex);
 					parrents[parrentIndex] = true;
 					removeLeaf(i);
-					graphSize--;
 				}
 			}
-//			int parrentCounter = 0;
-//			int lastNodeIndex = -1;
 			leaves = findLeafs(graph);
 			for (int i = 0; i < graph.length; i++) {
 				if (parrents[i] && leaves[i]) {
 					makeCertForParrent(i);
-//					parrentCounter++;
-//					lastNodeIndex = i;
 				}
 			}
-//			if (parrentCounter == 1) {
-//				System.out.println("poslední node" + lastNodeIndex);
-//			}
-//			System.out.println(graphSize);
-//			System.out.println(parrentCounter);
 
-//			if (nothingLeft) {
-//				break;
-//			}
 			int[] closedCheck = checkClosed(graph.length);
 			if (closedCheck[0] == 2) {
 				finalCert = makeCert2Left(parrents);
@@ -168,7 +156,6 @@ public class TreeCert {
 			if (leaves[i]) {
 				certs[i].add("01");
 			}
-
 		}
 	}
 
@@ -191,7 +178,8 @@ public class TreeCert {
 	void clearClosed() {
 		for (int i = 0; i < closed.length; i++) {
 			closed[i] = false;
+			certs[i].clear();
+			onlyLeaves[i] = false;
 		}
-
 	}
 }

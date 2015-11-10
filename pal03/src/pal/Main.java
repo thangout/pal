@@ -22,7 +22,6 @@ public class Main {
 
 	static boolean[][] graphA;
 	static boolean[][] graphB;
-	static long[] weight;
 
 	static int[] fromEdge;
 	static int[] toEdge;
@@ -31,7 +30,7 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		// TODO code application logic here
 		int numOfBuildings = 0;
-//		BufferedReader in = new BufferedReader(new FileReader("pub03.in"));
+//		BufferedReader in = new BufferedReader(new FileReader("pub10.in"));
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String firstLine = in.readLine();
 
@@ -42,7 +41,6 @@ public class Main {
 
 		graphA = new boolean[numOfBuildings][numOfBuildings];
 		graphB = new boolean[numOfBuildings + 1][numOfBuildings + 1];
-		weight = new long[numOfBuildings];
 
 		for (int i = 0; i < numOfBuildings - 1; i++) {
 			firstLine = in.readLine();
