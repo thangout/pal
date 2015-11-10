@@ -59,8 +59,9 @@ public class TreeCert {
 		return -1;
 	}
 
-	void computeCert(boolean[][] graph) {
+	String computeCert(boolean[][] graph) {
 		int graphSize = graph.length;
+		String finalCert = null;
 		boolean[] leaves = findLeafs(graph);
 		initLeaves(leaves);
 		while (true) {
@@ -77,14 +78,14 @@ public class TreeCert {
 					graphSize--;
 				}
 			}
-			int parrentCounter = 0;
-			int lastNodeIndex = -1;
+//			int parrentCounter = 0;
+//			int lastNodeIndex = -1;
 			leaves = findLeafs(graph);
 			for (int i = 0; i < graph.length; i++) {
 				if (parrents[i] && leaves[i]) {
 					makeCertForParrent(i);
-					parrentCounter++;
-					lastNodeIndex = i;
+//					parrentCounter++;
+//					lastNodeIndex = i;
 				}
 			}
 //			if (parrentCounter == 1) {
@@ -98,14 +99,15 @@ public class TreeCert {
 //			}
 			int[] closedCheck = checkClosed(graph.length);
 			if (closedCheck[0] == 2) {
-				System.out.println(makeCert2Left(parrents));
+				finalCert = makeCert2Left(parrents);
 				break;
-			}else if(closedCheck[0] == 1){
-				makeCertForParrent(closedCheck[1]);
+			} else if (closedCheck[0] == 1) {
+				finalCert = makeCertForParrent(closedCheck[1]);
 				break;
 			}
-
 		}
+		System.out.println(finalCert);
+		return finalCert;
 	}
 
 	void addCertToParrent(int from, int to) {
@@ -115,7 +117,7 @@ public class TreeCert {
 		}
 	}
 
-	void makeCertForParrent(int index) {
+	String makeCertForParrent(int index) {
 		Collections.sort(certs[index]);
 		StringBuilder sb = new StringBuilder();
 		sb.append("0");
@@ -125,7 +127,8 @@ public class TreeCert {
 		sb.append("1");
 		certs[index].clear();
 		certs[index].add(sb.toString());
-		System.out.println(index + " " + sb.toString());
+		return certs[index].get(0);
+//		System.out.println(index + " " + sb.toString());
 	}
 
 	String makeCert2Left(boolean[] parrents) {
@@ -142,7 +145,7 @@ public class TreeCert {
 		if (cert[0].compareTo(cert[1]) < 0) {
 			sb.append(cert[0]);
 			sb.append(cert[1]);
-			System.out.println("cert size " + sb.toString().length());
+//			System.out.println("cert size " + sb.toString().length());
 			return sb.toString();
 		} else {
 			sb.append(cert[1]);
@@ -174,9 +177,9 @@ public class TreeCert {
 				lastIndex = i;
 			}
 		}
-		box[0] = unclosed;	
-		box[1] = lastIndex; 
-		System.out.println("Unclosed " + unclosed + " last index = " + lastIndex);
+		box[0] = unclosed;
+		box[1] = lastIndex;
+//		System.out.println("Unclosed " + unclosed + " last index = " + lastIndex);
 		return box;
 	}
 }
