@@ -31,7 +31,7 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		// TODO code application logic here
 		int numOfBuildings = 0;
-		BufferedReader in = new BufferedReader(new FileReader("pub01.in"));
+		BufferedReader in = new BufferedReader(new FileReader("pub04.in"));
 //		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String firstLine = in.readLine();
 

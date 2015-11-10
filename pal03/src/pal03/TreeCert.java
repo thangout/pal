@@ -79,29 +79,32 @@ public class TreeCert {
 			}
 			int parrentCounter = 0;
 			int lastNodeIndex = -1;
+			leaves = findLeafs(graph);
 			for (int i = 0; i < graph.length; i++) {
-				if (parrents[i]) {
+				if (parrents[i] && leaves[i]) {
 					makeCertForParrent(i);
 					parrentCounter++;
 					lastNodeIndex = i;
 				}
 			}
-			if (parrentCounter == 1) {
-				System.out.println("poslední node" + lastNodeIndex);
-			}
+//			if (parrentCounter == 1) {
+//				System.out.println("poslední node" + lastNodeIndex);
+//			}
 //			System.out.println(graphSize);
 //			System.out.println(parrentCounter);
 
-			if (nothingLeft) {
+//			if (nothingLeft) {
+//				break;
+//			}
+			int[] closedCheck = checkClosed(graph.length);
+			if (closedCheck[0] == 2) {
+				System.out.println(makeCert2Left(parrents));
+				break;
+			}else if(closedCheck[0] == 1){
+				makeCertForParrent(closedCheck[1]);
 				break;
 			}
 
-			if (checkClosed(graph.length) == 2) {
-				System.out.println(makeCert2Left(parrents));
-				break;
-			}
-			
-			leaves = findLeafs(graph);
 		}
 	}
 
@@ -139,7 +142,7 @@ public class TreeCert {
 		if (cert[0].compareTo(cert[1]) < 0) {
 			sb.append(cert[0]);
 			sb.append(cert[1]);
-			System.out.println("cert size " + sb.toString().length());	
+			System.out.println("cert size " + sb.toString().length());
 			return sb.toString();
 		} else {
 			sb.append(cert[1]);
@@ -161,14 +164,19 @@ public class TreeCert {
 		}
 	}
 
-	int checkClosed(int size) {
+	int[] checkClosed(int size) {
+		int[] box = new int[2];
 		int unclosed = 0;
+		int lastIndex = -1;
 		for (int i = 0; i < size; i++) {
 			if (!closed[i]) {
 				unclosed++;
+				lastIndex = i;
 			}
 		}
-		System.out.println("Unclosed " + unclosed);
-		return unclosed;
+		box[0] = unclosed;	
+		box[1] = lastIndex; 
+		System.out.println("Unclosed " + unclosed + " last index = " + lastIndex);
+		return box;
 	}
 }
