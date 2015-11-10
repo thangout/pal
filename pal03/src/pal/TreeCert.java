@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pal03;
+package pal;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +25,7 @@ public class TreeCert {
 		this.graphB = graphB;
 		certs = new ArrayList[graphB.length];
 		this.closed = new boolean[graphB.length];
-		initCerts();
+//		initCerts();
 	}
 
 	private void initCerts() {
@@ -59,7 +59,12 @@ public class TreeCert {
 		return -1;
 	}
 
-	String computeCert(boolean[][] graph) {
+	String computeCert(boolean[][] graph, int removeVertIndex) {
+		clearClosed();
+		initCerts();
+		if (removeVertIndex >= 0) {
+			closed[removeVertIndex] = true;
+		}
 		int graphSize = graph.length;
 		String finalCert = null;
 		boolean[] leaves = findLeafs(graph);
@@ -106,7 +111,7 @@ public class TreeCert {
 				break;
 			}
 		}
-		System.out.println(finalCert);
+//		System.out.println(finalCert);
 		return finalCert;
 	}
 
@@ -181,5 +186,12 @@ public class TreeCert {
 		box[1] = lastIndex;
 //		System.out.println("Unclosed " + unclosed + " last index = " + lastIndex);
 		return box;
+	}
+
+	void clearClosed() {
+		for (int i = 0; i < closed.length; i++) {
+			closed[i] = false;
+		}
+
 	}
 }

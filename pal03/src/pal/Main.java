@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pal03;
+package pal;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -31,8 +31,8 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		// TODO code application logic here
 		int numOfBuildings = 0;
-		BufferedReader in = new BufferedReader(new FileReader("pub01.in"));
-//		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+//		BufferedReader in = new BufferedReader(new FileReader("pub03.in"));
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String firstLine = in.readLine();
 
 		StringTokenizer tokenizer = new StringTokenizer(firstLine);
@@ -70,13 +70,16 @@ public class Main {
 		in.close();
 
 //		Certificate cs = new Certificate(graphA, graphB);
-		TreeCert tc = new TreeCert(graphA, graphB);
-		tc.computeCert(graphA);
-
+//		TreeCert tc = new TreeCert(graphA, graphB);
+//		tc.computeCert(graphA);
+//		tc.computeCert(graphB);
 //		ArrayList<String> asd = new ArrayList<>();
 //		asd.add("0011");
 //		asd.add("001011");
 //		Collections.sort(asd);
 //		System.out.println(asd.get(0));
+
+		Isomorph iso = new Isomorph(graphA, graphB);
+		iso.findIsoVert();
 	}
 }
