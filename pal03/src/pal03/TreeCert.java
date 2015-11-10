@@ -96,11 +96,12 @@ public class TreeCert {
 				break;
 			}
 
-			leaves = findLeafs(graph);
 			if (checkClosed(graph.length) == 2) {
 				System.out.println(makeCert2Left(parrents));
 				break;
 			}
+			
+			leaves = findLeafs(graph);
 		}
 	}
 
@@ -135,13 +136,14 @@ public class TreeCert {
 		}
 
 		StringBuilder sb = new StringBuilder();
-		if (cert[0].compareTo(cert[1]) > 0) {
+		if (cert[0].compareTo(cert[1]) < 0) {
 			sb.append(cert[0]);
 			sb.append(cert[1]);
+			System.out.println("cert size " + sb.toString().length());	
 			return sb.toString();
 		} else {
-			sb.append(cert[0]);
 			sb.append(cert[1]);
+			sb.append(cert[0]);
 			return sb.toString();
 		}
 	}

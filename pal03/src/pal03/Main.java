@@ -9,6 +9,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
@@ -70,5 +72,11 @@ public class Main {
 //		Certificate cs = new Certificate(graphA, graphB);
 		TreeCert tc = new TreeCert(graphA, graphB);
 		tc.computeCert(graphA);
+
+//		ArrayList<String> asd = new ArrayList<>();
+//		asd.add("0011");
+//		asd.add("001011");
+//		Collections.sort(asd);
+//		System.out.println(asd.get(0));
 	}
 }
