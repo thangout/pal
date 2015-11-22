@@ -12,3 +12,6 @@
 hs_err_pid*
 /dist/
 /pal03/build/
+/pal04/nbproject/private/
+/pal04/build/
+/pal04/dist/
