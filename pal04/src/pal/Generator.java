@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pal04;
+package pal;
 
 import java.util.ArrayList;
 
@@ -30,18 +30,19 @@ public class Generator {
 		primeTimesSubsets = new ArrayList<>();
 
 		initEratoSito();
-		calculatePrimeKsubsets();
+		calculatePrimeKsubsets(K);
 	}
 
-	void generate(int seed) {
+	int[] generate(int seed) {
 		int[] vals = new int[N];
 		vals[0] = seed;
 		for (int i = 0; i < N - 1; i++) {
 			vals[i + 1] = (A * vals[i] + C) % M;
 		}
 		for (int i = 0; i < vals.length; i++) {
-			System.out.print(vals[i] + ",");
+//			System.out.print(vals[i] + ",");
 		}
+		return vals;
 	}
 
 	void initEratoSito() {
@@ -53,9 +54,9 @@ public class Generator {
 				}
 			}
 		}
-		for (int i = 2; i < M; i++) {
+		for (int i = 2; i < M/K; i++) {
 			if (!eratoSito[i]) {
-				System.out.print(i + ",");
+//				System.out.print(i + ",");
 				primeNums.add(i);
 			}
 		}
@@ -63,13 +64,14 @@ public class Generator {
 //		System.out.println("Je tu" + count);
 	}
 
-	void calculatePrimeKsubsets() {
-		int size = primeNums.size();
+	void calculatePrimeKsubsets(int K) {
+//		int size = primeNums.size();
+		int size = 10;
 		int numRows = (int) Math.pow(2, size);
 		boolean[][] bools = new boolean[numRows][size];
 
 		//tj K - podmonožin
-		int Ka = 2;
+		int Ka = K;
 		int trueCounter = 0;
 
 		int[] KaIndex = new int[Ka];
@@ -98,6 +100,39 @@ public class Generator {
 			trueCounter = 0;
 //			System.out.println();
 		}
+	}
+
+	void findMostChallange() {
+		//best Seed
+		int S = 0;
+
+		//pocet prvočísel pro K
+		int I = 0;
+
+		int primeCounter = 0;
+		for (int i = 0; i < M; i++) {
+			int[] vals = generate(i);
+			for (int j = 1; j < vals.length; j++) {
+				if (primeTimesSubsets.contains(vals[j])) {
+					primeCounter++;
+				}
+			}
+			if (i == 0) {
+				I = primeCounter;
+				S = i;
+			}
+			
+
+			//check maximum
+			if (primeCounter > I) {
+				//new maximum found
+				I = primeCounter;
+				S = i;
+			}
+			primeCounter = 0;
+
+		}
+		System.out.println(S + " " + I);
 	}
 
 }
