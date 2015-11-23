@@ -6,6 +6,7 @@
 package pal;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
@@ -30,7 +31,9 @@ public class Generator {
 		primeTimesSubsets = new ArrayList<>();
 
 		initEratoSito();
-		calculatePrimeKsubsets(K);
+//		calculatePrimeKsubsets(K);
+//		makePrimeSubsets(K);
+		initRekSubset();
 	}
 
 	int[] generate(int seed) {
@@ -54,7 +57,7 @@ public class Generator {
 				}
 			}
 		}
-		for (int i = 2; i < M/K; i++) {
+		for (int i = 2; i < M / K; i++) {
 			if (!eratoSito[i]) {
 //				System.out.print(i + ",");
 				primeNums.add(i);
@@ -102,6 +105,56 @@ public class Generator {
 		}
 	}
 
+	void makePrimeSubsets(int k) {
+		int[] pointers = new int[k];
+
+		//inicalizace pointru 2 3 5 7 atd
+		for (int i = 0; i < pointers.length; i++) {
+			pointers[i] = i;
+		}
+
+		for (int i = pointers.length - 1; i >= 0; i--) {
+			int outIndex = pointers[i];
+
+			for (int j = outIndex; j < primeNums.size(); j++) {
+				primeTimesSubsets.add(timePrimes(pointers));
+				pointers[i]++;
+			}
+		}
+	}
+
+	int timePrimes(int[] pointers) {
+		int sum = 1;
+		for (int i = 0; i < pointers.length; i++) {
+			sum *= primeNums.get(pointers[i]);
+		}
+		return sum;
+	}
+
+	void initRekSubset() {
+		for (int i = 0; i < primeNums.size(); i++) {
+			makeRekSubsets(i, 0, 1);
+		}
+
+	}
+
+	void makeRekSubsets(int prevIndex, int height, int sum) {
+		sum *= primeNums.get(prevIndex);
+//		System.out.print(prevIndex);
+		if (height == K - 1) {
+			primeTimesSubsets.add(sum);
+//			System.out.println("Sum si " + sum);
+			return;
+		}
+		height++;
+		prevIndex++;
+		for (int i = prevIndex; i < primeNums.size(); i++) {
+//			System.out.print(i);
+			makeRekSubsets(i, height, sum);
+		}
+//		System.out.println("_");
+	}
+
 	void findMostChallange() {
 		//best Seed
 		int S = 0;
@@ -121,7 +174,6 @@ public class Generator {
 				I = primeCounter;
 				S = i;
 			}
-			
 
 			//check maximum
 			if (primeCounter > I) {
