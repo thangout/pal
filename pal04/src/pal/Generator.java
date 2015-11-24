@@ -57,14 +57,16 @@ public class Generator {
 				}
 			}
 		}
+		int count = 0;
 		for (int i = 2; i < M / K; i++) {
 			if (!eratoSito[i]) {
 //				System.out.print(i + ",");
+				count++;
 				primeNums.add(i);
 			}
 		}
 //		System.out.println("");
-//		System.out.println("Je tu" + count);
+		System.out.println("Je tu" + count);
 	}
 
 	void calculatePrimeKsubsets(int K) {
@@ -133,15 +135,18 @@ public class Generator {
 
 	void initRekSubset() {
 		for (int i = 0; i < primeNums.size(); i++) {
-			makeRekSubsets(i, 0, 1);
+			makeRekSubsets(i, 0, 1, false);
 		}
 
 	}
 
-	void makeRekSubsets(int prevIndex, int height, int sum) {
+	void makeRekSubsets(int prevIndex, int height, int sum, boolean stopRek) {
 		sum *= primeNums.get(prevIndex);
+		if (sum > M) {
+			stopRek = true;
+		}
 //		System.out.print(prevIndex);
-		if (height == K - 1) {
+		if (height == K - 1 || stopRek) {
 			primeTimesSubsets.add(sum);
 //			System.out.println("Sum si " + sum);
 			return;
@@ -150,7 +155,7 @@ public class Generator {
 		prevIndex++;
 		for (int i = prevIndex; i < primeNums.size(); i++) {
 //			System.out.print(i);
-			makeRekSubsets(i, height, sum);
+			makeRekSubsets(i, height, sum, stopRek);
 		}
 //		System.out.println("_");
 	}
