@@ -6,7 +6,9 @@
 package pal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.PriorityQueue;
 
 /**
  *
@@ -16,8 +18,10 @@ public class Generator {
 
 	int A, C, M, K, N;
 	boolean[] eratoSito;
-	ArrayList<Integer> primeTimesSubsets;
+	HashSet<Integer> primeTimesSubsets;
 	ArrayList<Integer> primeNums;
+	int[] primeNumsI;
+	int primeCount = 0;
 
 	public Generator(int A, int C, int M, int K, int N) {
 		this.A = A;
@@ -28,7 +32,7 @@ public class Generator {
 		eratoSito = new boolean[M + 1];
 
 		primeNums = new ArrayList<>();
-		primeTimesSubsets = new ArrayList<>();
+		primeTimesSubsets = new HashSet<>();
 
 		initEratoSito();
 //		calculatePrimeKsubsets(K);
@@ -37,14 +41,17 @@ public class Generator {
 	}
 
 	int[] generate(int seed) {
-		int[] vals = new int[N];
+		int[] vals = new int[M];
+		boolean[] isIn = new boolean[M];
 		vals[0] = seed;
-		for (int i = 0; i < N - 1; i++) {
+		isIn[seed] = true;
+		for (int i = 0; i < M - 1; i++) {
 			vals[i + 1] = (A * vals[i] + C) % M;
+//			isIn[vals[i + 1]] = true;
 		}
-		for (int i = 0; i < vals.length; i++) {
-//			System.out.print(vals[i] + ",");
-		}
+//		for (int i = 0; i < vals.length; i++) {
+//			System.out.println(vals[i] + ",");
+//		}
 		return vals;
 	}
 
@@ -57,103 +64,44 @@ public class Generator {
 				}
 			}
 		}
-		int count = 0;
+		primeNumsI = new int[M / K];
+		int primeNumsIPointer = 0;
+
 		for (int i = 2; i < M / K; i++) {
 			if (!eratoSito[i]) {
-//				System.out.print(i + ",");
-				count++;
-				primeNums.add(i);
+				primeNumsI[primeNumsIPointer] = i;
+				primeCount++;
+				primeNumsIPointer++;
+//				primeNums.add(i);
 			}
 		}
-//		System.out.println("");
-		System.out.println("Je tu" + count);
-	}
-
-	void calculatePrimeKsubsets(int K) {
-//		int size = primeNums.size();
-		int size = 10;
-		int numRows = (int) Math.pow(2, size);
-		boolean[][] bools = new boolean[numRows][size];
-
-		//tj K - podmonožin
-		int Ka = K;
-		int trueCounter = 0;
-
-		int[] KaIndex = new int[Ka];
-
-		for (int i = 0; i < bools.length; i++) {
-			for (int j = 0; j < bools[i].length; j++) {
-				int val = bools.length * j + i;
-				int ret = (1 & (val >>> j));
-				if (ret != 0) {
-					if (trueCounter < Ka) {
-						KaIndex[trueCounter] = j;
-					}
-					trueCounter++;
-					bools[i][j] = true;
-				}
-//				System.out.print(bools[i][j] + "\t");
-			}
-			if (trueCounter == Ka) {
-//				System.out.print("rádek " + i);
-				int primeSubsetSum = 1;
-				for (int j = 0; j < Ka; j++) {
-					primeSubsetSum *= primeNums.get(KaIndex[j]);
-				}
-				primeTimesSubsets.add(primeSubsetSum);
-			}
-			trueCounter = 0;
-//			System.out.println();
-		}
-	}
-
-	void makePrimeSubsets(int k) {
-		int[] pointers = new int[k];
-
-		//inicalizace pointru 2 3 5 7 atd
-		for (int i = 0; i < pointers.length; i++) {
-			pointers[i] = i;
-		}
-
-		for (int i = pointers.length - 1; i >= 0; i--) {
-			int outIndex = pointers[i];
-
-			for (int j = outIndex; j < primeNums.size(); j++) {
-				primeTimesSubsets.add(timePrimes(pointers));
-				pointers[i]++;
-			}
-		}
-	}
-
-	int timePrimes(int[] pointers) {
-		int sum = 1;
-		for (int i = 0; i < pointers.length; i++) {
-			sum *= primeNums.get(pointers[i]);
-		}
-		return sum;
 	}
 
 	void initRekSubset() {
-		for (int i = 0; i < primeNums.size(); i++) {
+		for (int i = 0; i < primeCount; i++) {
 			makeRekSubsets(i, 0, 1, false);
 		}
 
 	}
 
 	void makeRekSubsets(int prevIndex, int height, int sum, boolean stopRek) {
-		sum *= primeNums.get(prevIndex);
-		if (sum > M) {
+		sum *= primeNumsI[prevIndex];
+		if (sum > M || sum < 0) {
 			stopRek = true;
+			return;
 		}
 //		System.out.print(prevIndex);
 		if (height == K - 1 || stopRek) {
-			primeTimesSubsets.add(sum);
+			if (sum <= M) {
+//				System.out.println(sum);
+				primeTimesSubsets.add(sum);
+			}
 //			System.out.println("Sum si " + sum);
 			return;
 		}
 		height++;
 		prevIndex++;
-		for (int i = prevIndex; i < primeNums.size(); i++) {
+		for (int i = prevIndex; i < primeCount; i++) {
 //			System.out.print(i);
 			makeRekSubsets(i, height, sum, stopRek);
 		}
@@ -168,27 +116,56 @@ public class Generator {
 		int I = 0;
 
 		int primeCounter = 0;
-		for (int i = 0; i < M; i++) {
-			int[] vals = generate(i);
-			for (int j = 1; j < vals.length; j++) {
-				if (primeTimesSubsets.contains(vals[j])) {
+
+		int[] seeds = generate(0);
+		boolean[] isInPrimeSubset = new boolean[M];
+		for (int i = 0; i < N; i++) {
+//			System.out.println("pa" +  i);
+			if (primeTimesSubsets.contains(seeds[i])) {
+				isInPrimeSubset[i] = true;
+				primeCounter++;
+			}
+		}
+//		System.out.println("kuki" + primeCounter);
+		I = primeCounter;
+		S = 0;
+
+		int startPointer = 0;
+		int endPointer = startPointer + N - 1;
+
+		startPointer++;
+		endPointer++;
+		while (startPointer != 0) {
+//			System.out.println("S:" + startPointer);
+//			System.out.println("F:" + endPointer);
+//			System.out.println("_");
+//			if (primeTimesSubsets.contains(seeds[startPointer])) {
+//				primeCounter--;
+//			}
+			if (isInPrimeSubset[startPointer]) {
+				primeCounter--;
+			}
+			if (!isInPrimeSubset[endPointer]) {
+				if (primeTimesSubsets.contains(seeds[endPointer])) {
+					isInPrimeSubset[endPointer] = true;
 					primeCounter++;
 				}
+			} else {
+				primeCounter++;
 			}
-			if (i == 0) {
+//			System.out.println(primeCounter);
+			if (I < primeCounter) {
+				//new max founded
 				I = primeCounter;
-				S = i;
+				S = seeds[startPointer];
+//				System.out.println("new seed " + S);
 			}
-
-			//check maximum
-			if (primeCounter > I) {
-				//new maximum found
-				I = primeCounter;
-				S = i;
-			}
-			primeCounter = 0;
-
+			startPointer++;
+			endPointer++;
+			startPointer = startPointer % M;
+			endPointer = endPointer % M;
 		}
+
 		System.out.println(S + " " + I);
 	}
 

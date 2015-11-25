@@ -23,7 +23,7 @@ public class Main {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) throws IOException {
-		BufferedReader in = new BufferedReader(new FileReader("pub06.in"));
+		BufferedReader in = new BufferedReader(new FileReader("pub07.in"));
 //		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String firstLine = in.readLine();
 
@@ -39,6 +39,8 @@ public class Main {
 
 		Generator ge = new Generator(A, C, M, K, N);
 		ge.findMostChallange();
+
+//		long[] a = new long[300000000];
 	}
 
 }
