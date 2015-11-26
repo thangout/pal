@@ -18,10 +18,11 @@ public class Generator {
 
 	int A, C, M, K, N;
 	boolean[] eratoSito;
-	HashSet<Integer> primeTimesSubsets;
-	ArrayList<Integer> primeNums;
+//	HashSet<Integer> primeTimesSubsets;
+//	ArrayList<Integer> primeNums;
 	int[] primeNumsI;
 	int primeCount = 0;
+	boolean[] primeTimesSub;
 
 	public Generator(int A, int C, int M, int K, int N) {
 		this.A = A;
@@ -31,20 +32,21 @@ public class Generator {
 		this.N = N;
 		eratoSito = new boolean[M + 1];
 
-		primeNums = new ArrayList<>();
-		primeTimesSubsets = new HashSet<>();
-
+//		primeNums = new ArrayList<>();
+//		primeTimesSubsets = new HashSet<>();
+		primeTimesSub = new boolean[M];
 		initEratoSito();
 //		calculatePrimeKsubsets(K);
 //		makePrimeSubsets(K);
-		initRekSubset();
+//		initRekSubset();
+		makeRekSubsets(0, 0, 1L);
 	}
 
-	int[] generate(int seed) {
-		int[] vals = new int[M];
-		boolean[] isIn = new boolean[M];
+	long[] generate(int seed) {
+		long[] vals = new long[M];
+//		boolean[] isIn = new boolean[M];
 		vals[0] = seed;
-		isIn[seed] = true;
+//		isIn[seed] = true;
 		for (int i = 0; i < M - 1; i++) {
 			vals[i + 1] = (A * vals[i] + C) % M;
 //			isIn[vals[i + 1]] = true;
@@ -67,7 +69,7 @@ public class Generator {
 		primeNumsI = new int[M / K];
 		int primeNumsIPointer = 0;
 
-		for (int i = 2; i < M / K; i++) {
+		for (int i = 2; i < (M / K); i++) {
 			if (!eratoSito[i]) {
 				primeNumsI[primeNumsIPointer] = i;
 				primeCount++;
@@ -77,53 +79,52 @@ public class Generator {
 		}
 	}
 
-	void initRekSubset() {
-		for (int i = 0; i < primeCount; i++) {
-			makeRekSubsets(i, 0, 1, false);
-		}
-
-	}
-
-	void makeRekSubsets(int prevIndex, int height, int sum, boolean stopRek) {
-		sum *= primeNumsI[prevIndex];
-		if (sum > M || sum < 0) {
-			stopRek = true;
-			return;
-		}
-//		System.out.print(prevIndex);
-		if (height == K - 1 || stopRek) {
+	void makeRekSubsets(int prevIndex, int height, long sum) {
+//		if (sum > M) {
+//			return;
+//		}
+		if (height == K) {
 			if (sum <= M) {
-//				System.out.println(sum);
-				primeTimesSubsets.add(sum);
+				primeTimesSub[(int) sum] = true;
 			}
-//			System.out.println("Sum si " + sum);
 			return;
+		} else {
+			for (int i = prevIndex; i < primeCount; i++) {
+				long sumTemp = sum * primeNumsI[i];
+				if (sumTemp > M) {
+//					System.out.println("*" + primeNumsI[i] + " going back " + sum * primeNumsI[i] + " > " + M);
+					return;
+				} else {
+//					prevIndex++;
+					int newI = i + 1;
+					int newHeight = height + 1;
+					makeRekSubsets(newI, newHeight, sumTemp);
+				}
+			}
 		}
-		height++;
-		prevIndex++;
-		for (int i = prevIndex; i < primeCount; i++) {
-//			System.out.print(i);
-			makeRekSubsets(i, height, sum, stopRek);
-		}
-//		System.out.println("_");
 	}
 
 	void findMostChallange() {
 		//best Seed
-		int S = 0;
+		long S = 0;
 
 		//pocet prvočísel pro K
 		int I = 0;
 
 		int primeCounter = 0;
 
-		int[] seeds = generate(0);
-		boolean[] isInPrimeSubset = new boolean[M];
+		long[] seeds = generate(0);
+//		boolean[] isInPrimeSubset = new boolean[M];
+		for (int i = 0; i < eratoSito.length; i++) {
+			eratoSito[i] = false;	
+		}
 		for (int i = 0; i < N; i++) {
 //			System.out.println("pa" +  i);
-			if (primeTimesSubsets.contains(seeds[i])) {
-				isInPrimeSubset[i] = true;
-				primeCounter++;
+			if (seeds[i] < primeTimesSub.length && seeds[i] > 0) {
+				if (primeTimesSub[(int) seeds[i]]) {
+					eratoSito[i] = true;
+					primeCounter++;
+				}
 			}
 		}
 //		System.out.println("kuki" + primeCounter);
@@ -142,13 +143,15 @@ public class Generator {
 //			if (primeTimesSubsets.contains(seeds[startPointer])) {
 //				primeCounter--;
 //			}
-			if (isInPrimeSubset[startPointer]) {
+			if (eratoSito[startPointer]) {
 				primeCounter--;
 			}
-			if (!isInPrimeSubset[endPointer]) {
-				if (primeTimesSubsets.contains(seeds[endPointer])) {
-					isInPrimeSubset[endPointer] = true;
-					primeCounter++;
+			if (!eratoSito[endPointer]) {
+				if (seeds[endPointer] > 0) {
+					if (primeTimesSub[ (int) seeds[endPointer]]) {
+						eratoSito[endPointer] = true;
+						primeCounter++;
+					}
 				}
 			} else {
 				primeCounter++;
