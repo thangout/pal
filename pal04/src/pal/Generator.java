@@ -15,11 +15,11 @@ public class Generator {
 
 	int A, C, M, K, N;
 	boolean[] eratoSito;
-	HashSet<Integer> primeTimesSubsets;
-//	ArrayList<Integer> primeNums;
+//	HashSet<Integer> primeTimesSubsets;
 	int[] primeNumsI;
-//	boolean[] primeTimesSub;
+	boolean[] primeTimesSub;
 	int primeCount = 0;
+	int[] kas;
 
 	public Generator(int A, int C, int M, int K, int N) {
 		this.A = A;
@@ -27,33 +27,31 @@ public class Generator {
 		this.M = M;
 		this.K = K;
 		this.N = N;
+		initKass();
 		eratoSito = new boolean[M];
 
-//		primeNums = new ArrayList<>();
-		primeTimesSubsets = new HashSet<>();
-//		primeTimesSub = new boolean[M];
+//		primeTimesSubsets = new HashSet<>();
+		primeTimesSub = new boolean[M];
 		initEratoSito();
-//		calculatePrimeKsubsets(K);
-//		makePrimeSubsets(K);
-//		initRekSubset();
 		makeRekSubsets(0, 0, 1L);
 	}
 
 	int[] generate(int seed) {
-		int[] vals = new int[M];
-//		boolean[] isIn = new boolean[M];
+		int[] vals = new int[N];
 		vals[0] = seed;
-//		isIn[seed] = true;
-		for (int i = 0; i < M - 1; i++) {
+		for (int i = 0; i < N - 1; i++) {
 			long tempVal = (A * (long) vals[i] + C);
-//			System.out.println(tempVal);
 			vals[i + 1] = (int) (tempVal % M);
-//			isIn[vals[i + 1]] = true;
 		}
-//		for (int i = 0; i < vals.length; i++) {
+//		for (int i = 0; i < 5; i++) {
 //			System.out.println(vals[i] + ",");
 //		}
 		return vals;
+	}
+
+	int nextGen(long seed) {
+		long tempVal = (A * seed + C);
+		return (int) (tempVal % M);
 	}
 
 	void initEratoSito() {
@@ -65,11 +63,20 @@ public class Generator {
 				}
 			}
 		}
-		primeNumsI = new int[M / K];
+		int primeNumsIsize = (M / kas[K - 2]);
+		primeNumsI = new int[primeNumsIsize];
 
-		for (int i = 2; i < (M / K); i++) {
+//		long sum = 1;
+		for (int i = 2; i < M; i++) {
 			if (!eratoSito[i]) {
+//				if (primeNumsI[primeCount] * i > M) {
+////					break;
+//				}
 				primeNumsI[primeCount] = i;
+				if (i > primeNumsIsize) {
+					break;
+				}
+//				sum *= i;
 				primeCount++;
 //				primeNums.add(i);
 			}
@@ -81,10 +88,8 @@ public class Generator {
 //			return;
 //		}
 		if (height == K) {
-			if (sum <= M) {
-//				primeTimesSub[(int) sum] = true;
-				primeTimesSubsets.add((int) sum);
-			}
+			primeTimesSub[(int) sum] = true;
+//				primeTimesSubsets.add((int) sum);
 			return;
 		} else {
 			for (int i = prevIndex; i < primeCount; i++) {
@@ -112,60 +117,79 @@ public class Generator {
 		int primeCounter = 0;
 
 		int[] seeds = generate(0);
-//		boolean[] isInPrimeSubset = new boolean[M];
-		for (int i = 0; i < eratoSito.length; i++) {
-			eratoSito[i] = false;
-		}
+//		for (int i = 0; i < eratoSito.length; i++) {
+//			eratoSito[i] = false;
+//		}
 
 		for (int i = 0; i < N; i++) {
 //			System.out.println("pa" +  i);
 //			if (seeds[i] < primeTimesSub.length) {
-//				if (primeTimesSub[(int) seeds[i]]) {
-//					eratoSito[i] = true;
-//					primeCounter++;
-//				}
-//			}
-			if (primeTimesSubsets.contains((int) seeds[i])) {
-				eratoSito[i] = true;
+			if (primeTimesSub[seeds[i]]) {
+//				eratoSito[seeds[i]] = true;
 				primeCounter++;
 			}
+//			}
+//			if (primeTimesSubsets.contains((int) seeds[i])) {
+//				eratoSito[seeds[i]] = true;
+//				primeCounter++;
+//			}
 		}
-//		System.out.println("kuki" + primeCounter);
 		I = primeCounter;
 		S = 0;
 
 		int startPointer = 0;
-		int endPointer = startPointer + N - 1;
+		int endPointer = seeds[N - 1];
 
-		startPointer++;
-		endPointer++;
+//		startPointer++;
+//		endPointer++;
+		startPointer = nextGen(startPointer);
+		endPointer = nextGen(endPointer);
 		while (startPointer != 0) {
-			if (eratoSito[startPointer]) {
+			if (primeTimesSub[startPointer]) {
 				primeCounter--;
 			}
-			if (!eratoSito[endPointer]) {
-				if (seeds[endPointer] > 0) {
-					if (primeTimesSubsets.contains((int) seeds[endPointer])) {
-						eratoSito[endPointer] = true;
-						primeCounter++;
-					}
-				}
-			} else {
+			if (primeTimesSub[endPointer]) {
 				primeCounter++;
 			}
+//			if (!eratoSito[endPointer]) {
+////				if (primeTimesSubsets.contains((int) endPointer)) {
+////					eratoSito[endPointer] = true;
+////					primeCounter++;
+////				}
+//				if (primeTimesSub[endPointer]) {
+//					eratoSito[endPointer] = true;
+//					primeCounter++;
+//				}
+//			} else {
+//				primeCounter++;
+//			}
 //			System.out.println(primeCounter);
 			if (I < primeCounter) {
 				//new max founded
 				I = primeCounter;
-				S = seeds[startPointer];
+				S = startPointer;
 //				System.out.println("new seed " + S);
 			}
-			startPointer++;
-			endPointer++;
-			startPointer = startPointer % M;
-			endPointer = endPointer % M;
+//			System.out.println("s"+startPointer);
+			startPointer = nextGen(startPointer);
+			endPointer = nextGen(endPointer);
+//			startPointer = startPointer % M;
+//			endPointer = endPointer % M;
 		}
 
 		System.out.println(S + " " + I);
+	}
+
+	void initKass() {
+		kas = new int[8];
+		kas[0] = 2;
+		kas[1] = 6;
+		kas[2] = 30;
+		kas[3] = 210;
+		kas[4] = 2310;
+		kas[5] = 30030;
+		kas[6] = 510510;
+		kas[7] = 9699690;
+//		kas[9] = 2156564410;	
 	}
 }
