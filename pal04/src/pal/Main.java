@@ -23,7 +23,7 @@ public class Main {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) throws IOException {
-		BufferedReader in = new BufferedReader(new FileReader("pub09.in"));
+		BufferedReader in = new BufferedReader(new FileReader("pub10.in"));
 //		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String firstLine = in.readLine();
 

@@ -5,6 +5,8 @@
  */
 package pal;
 
+import java.util.HashSet;
+
 /**
  *
  * @author Thang Do
@@ -13,10 +15,10 @@ public class Generator {
 
 	int A, C, M, K, N;
 	boolean[] eratoSito;
-//	HashSet<Integer> primeTimesSubsets;
+	HashSet<Integer> primeTimesSubsets;
 //	ArrayList<Integer> primeNums;
 	int[] primeNumsI;
-	boolean[] primeTimesSub;
+//	boolean[] primeTimesSub;
 	int primeCount = 0;
 
 	public Generator(int A, int C, int M, int K, int N) {
@@ -28,8 +30,8 @@ public class Generator {
 		eratoSito = new boolean[M];
 
 //		primeNums = new ArrayList<>();
-//		primeTimesSubsets = new HashSet<>();
-		primeTimesSub = new boolean[M];
+		primeTimesSubsets = new HashSet<>();
+//		primeTimesSub = new boolean[M];
 		initEratoSito();
 //		calculatePrimeKsubsets(K);
 //		makePrimeSubsets(K);
@@ -43,7 +45,7 @@ public class Generator {
 		vals[0] = seed;
 //		isIn[seed] = true;
 		for (int i = 0; i < M - 1; i++) {
-			long tempVal = (A * (long)vals[i] + C);
+			long tempVal = (A * (long) vals[i] + C);
 //			System.out.println(tempVal);
 			vals[i + 1] = (int) (tempVal % M);
 //			isIn[vals[i + 1]] = true;
@@ -64,13 +66,11 @@ public class Generator {
 			}
 		}
 		primeNumsI = new int[M / K];
-		int primeNumsIPointer = 0;
 
 		for (int i = 2; i < (M / K); i++) {
 			if (!eratoSito[i]) {
-				primeNumsI[primeNumsIPointer] = i;
+				primeNumsI[primeCount] = i;
 				primeCount++;
-				primeNumsIPointer++;
 //				primeNums.add(i);
 			}
 		}
@@ -82,7 +82,8 @@ public class Generator {
 //		}
 		if (height == K) {
 			if (sum <= M) {
-				primeTimesSub[(int) sum] = true;
+//				primeTimesSub[(int) sum] = true;
+				primeTimesSubsets.add((int) sum);
 			}
 			return;
 		} else {
@@ -118,11 +119,15 @@ public class Generator {
 
 		for (int i = 0; i < N; i++) {
 //			System.out.println("pa" +  i);
-			if (seeds[i] < primeTimesSub.length) {
-				if (primeTimesSub[(int) seeds[i]]) {
-					eratoSito[i] = true;
-					primeCounter++;
-				}
+//			if (seeds[i] < primeTimesSub.length) {
+//				if (primeTimesSub[(int) seeds[i]]) {
+//					eratoSito[i] = true;
+//					primeCounter++;
+//				}
+//			}
+			if (primeTimesSubsets.contains((int) seeds[i])) {
+				eratoSito[i] = true;
+				primeCounter++;
 			}
 		}
 //		System.out.println("kuki" + primeCounter);
@@ -135,18 +140,12 @@ public class Generator {
 		startPointer++;
 		endPointer++;
 		while (startPointer != 0) {
-//			System.out.println("S:" + startPointer);
-//			System.out.println("F:" + endPointer);
-//			System.out.println("_");
-//			if (primeTimesSubsets.contains(seeds[startPointer])) {
-//				primeCounter--;
-//			}
 			if (eratoSito[startPointer]) {
 				primeCounter--;
 			}
 			if (!eratoSito[endPointer]) {
 				if (seeds[endPointer] > 0) {
-					if (primeTimesSub[ (int) seeds[endPointer]]) {
+					if (primeTimesSubsets.contains((int) seeds[endPointer])) {
 						eratoSito[endPointer] = true;
 						primeCounter++;
 					}
