@@ -5,11 +5,6 @@
  */
 package pal;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.PriorityQueue;
-
 /**
  *
  * @author Thang Do
@@ -21,8 +16,8 @@ public class Generator {
 //	HashSet<Integer> primeTimesSubsets;
 //	ArrayList<Integer> primeNums;
 	int[] primeNumsI;
-	int primeCount = 0;
 	boolean[] primeTimesSub;
+	int primeCount = 0;
 
 	public Generator(int A, int C, int M, int K, int N) {
 		this.A = A;
@@ -30,7 +25,7 @@ public class Generator {
 		this.M = M;
 		this.K = K;
 		this.N = N;
-		eratoSito = new boolean[M + 1];
+		eratoSito = new boolean[M];
 
 //		primeNums = new ArrayList<>();
 //		primeTimesSubsets = new HashSet<>();
@@ -42,13 +37,15 @@ public class Generator {
 		makeRekSubsets(0, 0, 1L);
 	}
 
-	long[] generate(int seed) {
-		long[] vals = new long[M];
+	int[] generate(int seed) {
+		int[] vals = new int[M];
 //		boolean[] isIn = new boolean[M];
 		vals[0] = seed;
 //		isIn[seed] = true;
 		for (int i = 0; i < M - 1; i++) {
-			vals[i + 1] = (A * vals[i] + C) % M;
+			long tempVal = (A * (long)vals[i] + C);
+//			System.out.println(tempVal);
+			vals[i + 1] = (int) (tempVal % M);
 //			isIn[vals[i + 1]] = true;
 		}
 //		for (int i = 0; i < vals.length; i++) {
@@ -113,14 +110,15 @@ public class Generator {
 
 		int primeCounter = 0;
 
-		long[] seeds = generate(0);
+		int[] seeds = generate(0);
 //		boolean[] isInPrimeSubset = new boolean[M];
 		for (int i = 0; i < eratoSito.length; i++) {
-			eratoSito[i] = false;	
+			eratoSito[i] = false;
 		}
+
 		for (int i = 0; i < N; i++) {
 //			System.out.println("pa" +  i);
-			if (seeds[i] < primeTimesSub.length && seeds[i] > 0) {
+			if (seeds[i] < primeTimesSub.length) {
 				if (primeTimesSub[(int) seeds[i]]) {
 					eratoSito[i] = true;
 					primeCounter++;
@@ -171,5 +169,4 @@ public class Generator {
 
 		System.out.println(S + " " + I);
 	}
-
 }
