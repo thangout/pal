@@ -5,8 +5,6 @@
  */
 package pal;
 
-import java.util.HashSet;
-
 /**
  *
  * @author Thang Do
@@ -28,7 +26,12 @@ public class Generator {
 		this.K = K;
 		this.N = N;
 		initKass();
-		int primeNumsIsize = (M / kas[K - 2]);
+		int primeNumsIsize;
+		if (K > 1) {
+			primeNumsIsize = (M / kas[K - 2])+1;
+		} else {
+			primeNumsIsize = (M);
+		}
 		eratoSito = new boolean[primeNumsIsize + 1];
 
 //		primeTimesSubsets = new HashSet<>();
@@ -38,13 +41,13 @@ public class Generator {
 	}
 
 	int[] generate(int seed) {
-		int[] vals = new int[N];
+		int[] vals = new int[M];
 		vals[0] = seed;
-		for (int i = 0; i < N - 1; i++) {
+		for (int i = 0; i < M - 1; i++) {
 			long tempVal = (A * (long) vals[i] + C);
 			vals[i + 1] = (int) (tempVal % M);
 		}
-//		for (int i = 0; i < 5; i++) {
+//		for (int i = 0; i < M; i++) {
 //			System.out.println(vals[i] + ",");
 //		}
 		return vals;
@@ -56,7 +59,13 @@ public class Generator {
 	}
 
 	void initEratoSito() {
-		int primeNumsIsize = (M / kas[K - 2]);
+		int primeNumsIsize;
+		if (K > 1) {
+			primeNumsIsize = (M / kas[K - 2]);
+		} else {
+			primeNumsIsize = (M);
+		}
+
 		primeNumsI = new int[primeNumsIsize];
 		for (int i = 2; i < primeNumsIsize; i++) {
 			if (!eratoSito[i]) {
@@ -118,7 +127,7 @@ public class Generator {
 
 	void findMostChallange() {
 		//best Seed
-		long S = 0;
+		int S = 0;
 
 		//pocet prvočísel pro K
 		int I = 0;
@@ -131,73 +140,44 @@ public class Generator {
 //		}
 
 		for (int i = 0; i < N; i++) {
-//			System.out.println("pa" +  i);
-//			if (seeds[i] < primeTimesSub.length) {
 			if (primeTimesSub[seeds[i]]) {
 //				eratoSito[seeds[i]] = true;
 				primeCounter++;
 			}
-//			}
-//			if (primeTimesSubsets.contains((int) seeds[i])) {
-//				eratoSito[seeds[i]] = true;
-//				primeCounter++;
-//			}
 		}
+//			System.out.println(primeCounter);
 		I = primeCounter;
 		S = 0;
 
 		int startPointer = 0;
-		int endPointer = seeds[N - 1];
+//		int endPointer = seeds[N - 1];
+		int endPointer = N - 1;
 
-//		startPointer++;
-//		endPointer++;
-		startPointer = nextGen(startPointer);
-		endPointer = nextGen(endPointer);
-		boolean zeroFound = false;
-		int seedPointer = 0;
-		int condition = -1;
-		if (K <= 8) {
-			condition = 0;
-		} else {
-			condition = seeds[N - 1];
-		}
-		while (startPointer != condition) {
-			if (primeTimesSub[startPointer]) {
+		startPointer++;
+		endPointer++;
+		while (startPointer != 0) {
+//			System.out.println("+"+startPointer + " " + endPointer +  "=" + seeds[startPointer]);
+			if (primeTimesSub[seeds[startPointer]]) {
 				primeCounter--;
 			}
-			if (primeTimesSub[endPointer]) {
+			if (primeTimesSub[seeds[endPointer]]) {
 				primeCounter++;
 			}
-			if (zeroFound) {
-				zeroFound = true;
-			}
-//			if (!eratoSito[endPointer]) {
-////				if (primeTimesSubsets.contains((int) endPointer)) {
-////					eratoSito[endPointer] = true;
-////					primeCounter++;
-////				}
-//				if (primeTimesSub[endPointer]) {
-//					eratoSito[endPointer] = true;
-//					primeCounter++;
-//				}
-//			} else {
-//				primeCounter++;
-//			}
-//			System.out.println(primeCounter);
 			if (I < primeCounter) {
 				//new max founded
 				I = primeCounter;
-				S = startPointer;
+//				S = startPointer;
+				S = seeds[startPointer];
 //				System.out.println("new seed " + S);
 			}
-//			System.out.println("s"+startPointer);
-			startPointer = nextGen(startPointer);
-			if (zeroFound) {
-				endPointer = seeds[seedPointer++];
-			} else {
-				endPointer = nextGen(endPointer);
+			startPointer++;
+			endPointer++;
+			if (startPointer == M) {
+				startPointer = 0;	
 			}
-//			System.out.println(endPointer);
+			if (endPointer == M) {
+				endPointer = 0;
+			}
 //			startPointer = startPointer % M;
 //			endPointer = endPointer % M;
 		}
