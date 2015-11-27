@@ -28,7 +28,7 @@ public class Generator {
 		initKass();
 		int primeNumsIsize;
 		if (K > 1) {
-			primeNumsIsize = (M / kas[K - 2])+1;
+			primeNumsIsize = (M / kas[K - 2]) + 1;
 		} else {
 			primeNumsIsize = (M);
 		}
@@ -48,7 +48,7 @@ public class Generator {
 			vals[i + 1] = (int) (tempVal % M);
 		}
 //		for (int i = 0; i < M; i++) {
-//			System.out.println(vals[i] + ",");
+//			System.out.print(vals[i] + ",");
 //		}
 		return vals;
 	}
@@ -156,11 +156,9 @@ public class Generator {
 		startPointer++;
 		endPointer++;
 		while (startPointer != 0) {
-//			System.out.println("+"+startPointer + " " + endPointer +  "=" + seeds[startPointer]);
-			if (primeTimesSub[seeds[startPointer]]) {
-				primeCounter--;
-			}
+//			System.out.println("+" + startPointer + " " + endPointer + "=" + seeds[startPointer] + " -> " + seeds[endPointer]);
 			if (primeTimesSub[seeds[endPointer]]) {
+//				System.out.println(seeds[endPointer]);
 				primeCounter++;
 			}
 			if (I < primeCounter) {
@@ -170,10 +168,14 @@ public class Generator {
 				S = seeds[startPointer];
 //				System.out.println("new seed " + S);
 			}
+			if (primeTimesSub[seeds[startPointer]]) {
+				primeCounter--;
+			}
+			
 			startPointer++;
 			endPointer++;
 			if (startPointer == M) {
-				startPointer = 0;	
+				startPointer = 0;
 			}
 			if (endPointer == M) {
 				endPointer = 0;
