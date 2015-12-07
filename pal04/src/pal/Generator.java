@@ -5,6 +5,8 @@
  */
 package pal;
 
+import java.util.HashSet;
+
 /**
  *
  * @author Thang Do
@@ -13,9 +15,9 @@ public class Generator {
 
 	int A, C, M, K, N;
 	boolean[] eratoSito;
-//	HashSet<Integer> primeTimesSubsets;
-	int[] primeNumsI;
-	boolean[] primeTimesSub;
+	HashSet<Integer> primeTimesSubsets;
+	short[] primeNumsI;
+//	boolean[] primeTimesSub;
 	int primeCount = 0;
 	int[] kas;
 
@@ -28,14 +30,14 @@ public class Generator {
 		initKass();
 		int primeNumsIsize;
 		if (K > 1) {
-			primeNumsIsize = (M / kas[K - 2]) + 1;
+			primeNumsIsize = (M / kas[K - 2]);
 		} else {
 			primeNumsIsize = (M);
 		}
 		eratoSito = new boolean[primeNumsIsize + 1];
 
-//		primeTimesSubsets = new HashSet<>();
-		primeTimesSub = new boolean[M];
+		primeTimesSubsets = new HashSet<>();
+//		primeTimesSub = new boolean[M];
 		initEratoSito();
 		makeRekSubsets(0, 0, 1L);
 	}
@@ -66,7 +68,7 @@ public class Generator {
 			primeNumsIsize = (M);
 		}
 
-		primeNumsI = new int[primeNumsIsize];
+		primeNumsI = new short[primeNumsIsize];
 		for (int i = 2; i < primeNumsIsize; i++) {
 			if (!eratoSito[i]) {
 				for (int j = i; i * j < M; j++) {
@@ -78,7 +80,7 @@ public class Generator {
 				}
 			}
 			if (!eratoSito[i]) {
-				primeNumsI[primeCount] = i;
+				primeNumsI[primeCount] = (short) i;
 //				System.out.println(i);
 				primeCount++;
 			}
@@ -106,8 +108,8 @@ public class Generator {
 //			return;
 //		}
 		if (height == K) {
-			primeTimesSub[(int) sum] = true;
-//				primeTimesSubsets.add((int) sum);
+//			primeTimesSub[(int) sum] = true;
+			primeTimesSubsets.add((int) sum);
 			return;
 		} else {
 			for (int i = prevIndex; i < primeCount; i++) {
@@ -134,30 +136,28 @@ public class Generator {
 
 		int primeCounter = 0;
 
-		int[] seeds = generate(0);
-//		for (int i = 0; i < eratoSito.length; i++) {
-//			eratoSito[i] = false;
-//		}
-
+		int newSeed = 0;
+		int lastSeed = -1;
 		for (int i = 0; i < N; i++) {
-			if (primeTimesSub[seeds[i]]) {
-//				eratoSito[seeds[i]] = true;
+			if (primeTimesSubsets.contains(newSeed)) {
 				primeCounter++;
+			}
+			newSeed = nextGen(newSeed);
+			if (i == N - 2) {
+				lastSeed = newSeed;
 			}
 		}
 //			System.out.println(primeCounter);
 		I = primeCounter;
 		S = 0;
 
-		int startPointer = 0;
+		int startPointer = nextGen(0);
 //		int endPointer = seeds[N - 1];
-		int endPointer = N - 1;
+		int endPointer = nextGen(lastSeed);
 
-		startPointer++;
-		endPointer++;
 		while (startPointer != 0) {
 //			System.out.println("+" + startPointer + " " + endPointer + "=" + seeds[startPointer] + " -> " + seeds[endPointer]);
-			if (primeTimesSub[seeds[endPointer]]) {
+			if (primeTimesSubsets.contains(endPointer)) {
 //				System.out.println(seeds[endPointer]);
 				primeCounter++;
 			}
@@ -165,15 +165,15 @@ public class Generator {
 				//new max founded
 				I = primeCounter;
 //				S = startPointer;
-				S = seeds[startPointer];
+				S = startPointer;
 //				System.out.println("new seed " + S);
 			}
-			if (primeTimesSub[seeds[startPointer]]) {
+			if (primeTimesSubsets.contains(startPointer)) {
 				primeCounter--;
 			}
-			
-			startPointer++;
-			endPointer++;
+
+			startPointer = nextGen(startPointer);
+			endPointer = nextGen(endPointer);
 			if (startPointer == M) {
 				startPointer = 0;
 			}
