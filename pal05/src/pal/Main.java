@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pal05;
+package pal;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -23,14 +23,11 @@ public class Main {
 	 */
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		int S, A, F, P, N, L;
-		BufferedReader in = new BufferedReader(new FileReader("pub01.in"));
+		BufferedReader in = new BufferedReader(new FileReader("pub10.in"));
 //		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String firstLine = in.readLine();
 
 		StringTokenizer tokenizer = new StringTokenizer(firstLine);
-//		while (tokenizer.hasMoreTokens()) {
-//			numOfBuildings = Integer.valueOf(tokenizer.nextToken());
-//		}
 		S = Integer.valueOf(tokenizer.nextToken());
 		A = Integer.valueOf(tokenizer.nextToken());
 		F = Integer.valueOf(tokenizer.nextToken());
@@ -58,6 +55,8 @@ public class Main {
 		}
 
 		Automat au = new Automat(S, A, F, P, N, L, states, examples);
+		au.readExample();
+		au.printSolution();
 
 	}
 
