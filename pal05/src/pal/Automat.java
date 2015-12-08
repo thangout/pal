@@ -43,8 +43,21 @@ public class Automat {
 				finalStates[s][actualState] = true;
 				actualState = s;
 //				System.out.print(actualState + "_");
+				if (checkNumOfFinalStates(s) > F) {
+					break;	
+				}
 			}
 		}
+	}
+
+	int checkNumOfFinalStates(int row) {
+		int count = 0;
+		for (int i = 0; i < S; i++) {
+			if (finalStates[row][i]) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	void printSolution() {
@@ -58,7 +71,7 @@ public class Automat {
 				}
 			}
 			if (counter == F) {
-				System.out.println(res);
+			System.out.println(res);
 			}
 		}
 

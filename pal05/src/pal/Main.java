@@ -23,8 +23,8 @@ public class Main {
 	 */
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		int S, A, F, P, N, L;
-		BufferedReader in = new BufferedReader(new FileReader("pub10.in"));
-//		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+//		BufferedReader in = new BufferedReader(new FileReader("pub10.in"));
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String firstLine = in.readLine();
 
 		StringTokenizer tokenizer = new StringTokenizer(firstLine);
