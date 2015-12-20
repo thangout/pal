@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package pal06;
+package pal;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -26,7 +26,7 @@ public class Main {
 		String text;
 		String pattern;
 
-		BufferedReader in = new BufferedReader(new FileReader("pub02.in"));
+		BufferedReader in = new BufferedReader(new FileReader("pub08.in"));
 //		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String firstLine = in.readLine();
 
@@ -41,6 +41,7 @@ public class Main {
 		pattern = in.readLine();
 
 		TextSearch ts = new TextSearch(N, M, cI, cD, cR, text, pattern);
+//		ts.printLevenstein();
 	}
 	
 }
