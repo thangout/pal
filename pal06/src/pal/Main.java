@@ -26,8 +26,8 @@ public class Main {
 		String text;
 		String pattern;
 
-		BufferedReader in = new BufferedReader(new FileReader("pub08.in"));
-//		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+//		BufferedReader in = new BufferedReader(new FileReader("pub02.in"));
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String firstLine = in.readLine();
 
 		StringTokenizer tokenizer = new StringTokenizer(firstLine);
@@ -42,6 +42,7 @@ public class Main {
 
 		TextSearch ts = new TextSearch(N, M, cI, cD, cR, text, pattern);
 //		ts.printLevenstein();
+//		ts.printLevensteinPath();
 	}
 	
 }
