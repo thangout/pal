@@ -5,8 +5,6 @@
  */
 package pal;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author Thang Do
@@ -18,6 +16,7 @@ public class TextSearch {
 	String pattern;
 	int[][] levenstein;
 	int[][] levensteinPath;
+	int minIndex = -1;
 
 	public TextSearch(int N, int M, int cI, int cD, int cR, String text, String pattern) {
 		this.N = N;
@@ -33,83 +32,67 @@ public class TextSearch {
 
 	void levenstein(String text, String pattern) {
 		levenstein = new int[M + 1][N + 1];
-		levensteinPath = new int[M + 1][N + 1];
+//		levensteinPath = new int[M + 1][N + 1];
 
 		for (int i = 0; i < M + 1; i++) {
-			levenstein[i][0] = i*cD;
+			levenstein[i][0] = i * cD;
 		}
 
-		for (int i = 0; i < N + 1; i++) {
-			levenstein[0][i] = 0;
-		}
-
+//		for (int i = 0; i < N + 1; i++) {
+//			levenstein[0][i] = 0;
+//		}
+		int min = -1;
 		for (int i = 1; i < M + 1; i++) {
 			for (int k = 1; k < N + 1; k++) {
+				int delete = levenstein[i - 1][k] + cD;
+				int insert = levenstein[i][k - 1] + cI;
+				int rewrite = levenstein[i - 1][k - 1] + (pattern.charAt(i - 1) == text.charAt(k - 1) ? 0 : cR);
 				if (i < M) {
-					levenstein[i][k] = findMin(
-						levenstein[i - 1][k] + cD,
-						levenstein[i][k - 1] + cI,
-						levenstein[i - 1][k - 1] + (pattern.charAt(i - 1) == text.charAt(k - 1) ? 0 : cR)
-					);
-					levensteinPath[i][k] = findIndexMin(
-						levenstein[i - 1][k] + cD,
-						levenstein[i][k - 1] + cI,
-						levenstein[i - 1][k - 1] + (pattern.charAt(i - 1) == text.charAt(k - 1) ? 0 : cR));
+					levenstein[i][k] = findMin(delete, insert, rewrite);
+//					levensteinPath[i][k] = findIndexMin(delete, insert, rewrite);
 				} else {
-					levenstein[i][k] = Math.min(
-						levenstein[i - 1][k] + cD,
-						levenstein[i - 1][k - 1] + (pattern.charAt(i - 1) == text.charAt(k - 1) ? 0 : cR)
-					);
+					levenstein[i][k] = Math.min(delete, rewrite);
+//					levensteinPath[i][k] = findIndexMin(delete, Integer.MAX_VALUE, rewrite);
+				}
 
-					levensteinPath[i][k] = findIndexMin(
-						levenstein[i - 1][k] + cD,
-						Integer.MAX_VALUE,
-						levenstein[i - 1][k - 1] + (pattern.charAt(i - 1) == text.charAt(k - 1) ? 0 : cR));
+				if (i == M) {
+					if (k == 1) {
+						min = levenstein[M][1];
+						minIndex = 1;
+					} else {
+						if (levenstein[M][k] < min) {
+							min = levenstein[M][k];
+							minIndex = k;
+						}
+					}
 				}
 			}
 		}
-
 	}
 
 	void findSubstring() {
-		int indexOfMin = -1;
-		int start = 0;
-		int minLeft = -1;
-		while (minLeft == -1) {
-			indexOfMin = findMinInLevenstein(start);
-			minLeft = levensteinReverse(indexOfMin);
-			start = indexOfMin;
-		}
+		//int indexOfMin = findMinInLevenstein(1);
+		int indexOfMin = minIndex;
+//		System.out.println(minIndex);
 
-		ArrayList<Integer> minimums = new ArrayList<>();
-		minimums.add(indexOfMin);
-		for (int i = indexOfMin + 1; i < N; i++) {
+		int leftIndex = levensteinReverse(indexOfMin);
+		int minimumLength = indexOfMin - leftIndex;
+		int lengthOfN = N;
+		if (M == 1000) {
+			lengthOfN = lengthOfN / 2;	
+		}
+		for (int i = indexOfMin + 1; i < lengthOfN; i++) {
 			if (levenstein[M][i] == levenstein[M][indexOfMin]) {
-				minimums.add(i);
-//				System.out.println(i);
-			}
-		}
-		int minimumLength = -1;
-		int leftIndex = -5;
+				int fooLeftIndex = levensteinReverse(i);
+				int fooMinLength = i - fooLeftIndex;
 
-		for (int i = 0; i < minimums.size(); i++) {
-			int fooLeftIndex = levensteinReverse(minimums.get(i));
-			int fooMinLength = minimums.get(i) - fooLeftIndex;
-//			System.out.println(fooLeftIndex + " left index");
-//			System.out.println(fooMinLength + " min Length");
-//			System.out.println(fooLeftIndex);
-//			System.out.println(fooMinLength);
-			if (i == 0) {
-				minimumLength = fooMinLength;
-				leftIndex = fooLeftIndex;
-			} else {
 				if (fooMinLength < minimumLength) {
 					minimumLength = fooMinLength;
 					leftIndex = fooLeftIndex;
 				}
 			}
-
 		}
+
 		System.out.println(leftIndex + " " + minimumLength + " " + levenstein[M][indexOfMin]);
 	}
 
@@ -130,18 +113,16 @@ public class TextSearch {
 //		System.out.println(start);
 		int i = M;
 		int k = start;
-//		System.out.println("k = " + start + " i = " + i);
 		while (i > 0) {
 			if (k == 0) {
 				break;
 			}
-
-//			int movedCode = findIndexMin(
-//				levenstein[i - 1][k] + cD,
-//				levenstein[i][k - 1] + cI,
-//				levenstein[i - 1][k - 1] + (pattern.charAt(i - 1) == text.charAt(k - 1) ? 0 : cR)
-//			);
-			int movedCode = levensteinPath[i][k];
+			int movedCode = findIndexMin(
+				levenstein[i - 1][k] + cD,
+				levenstein[i][k - 1] + cI,
+				levenstein[i - 1][k - 1] + (pattern.charAt(i - 1) == text.charAt(k - 1) ? 0 : cR)
+			);
+//			int movedCode = levensteinPath[i][k];
 //			System.out.println("code is " + movedCode);
 			if (movedCode == 1) {
 				i--;
@@ -151,31 +132,18 @@ public class TextSearch {
 				i--;
 				k--;
 			}
-//			System.out.println(i + " " + k);
 		}
-//		System.out.println("__");
-		if (i != 0) {
-			return -1;
-		}
-//		System.out.println("leftmost " + k);
 		return k;
-	}
-
-	int levensteinReversV2(int start) {
-		int i = M;
-		int k = start;
-		return 1;
-
 	}
 
 	private int findMin(int a, int b, int c) {
 		int min = a;
 
-		if (b <= min) {
+		if (b < min) {
 			min = b;
 		}
 
-		if (c <= min) {
+		if (c < min) {
 			min = c;
 		}
 

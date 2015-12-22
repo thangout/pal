@@ -26,7 +26,7 @@ public class Main {
 		String text;
 		String pattern;
 
-//		BufferedReader in = new BufferedReader(new FileReader("pub08.in"));
+//		BufferedReader in = new BufferedReader(new FileReader("pub07.in"));
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String firstLine = in.readLine();
 
