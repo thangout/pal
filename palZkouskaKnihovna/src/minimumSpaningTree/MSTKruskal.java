@@ -21,6 +21,7 @@ public class MSTKruskal {
 
 	PriorityQueue<Edge> pq;
 
+	//hrany v kostře
 	Edge[] A;
 
 	public MSTKruskal(int[][] graph) {
