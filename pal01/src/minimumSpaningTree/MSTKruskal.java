@@ -11,7 +11,6 @@ import java.util.PriorityQueue;
  *
  * @author Thang Do
  */
-//otestováno funguje
 public class MSTKruskal {
 
 	//graf s váhami
@@ -54,7 +53,7 @@ public class MSTKruskal {
 		int edgeInACounter = 0;
 		while (pq.size() > 0) {
 			Edge e = pq.poll();
-//			System.out.println(findSet(e.u) + " : " + findSet(e.v));
+			System.out.println(findSet(e.u) + " : " + findSet(e.v));
 			if (findSet(e.u) != findSet(e.v)) {
 				A[edgeInACounter] = e;
 				union(e.u, e.v);
@@ -78,14 +77,5 @@ public class MSTKruskal {
 				set[i] = set[v];
 			}
 		}
-	}
-
-	//spočítá cenu spt
-	public int sptPrice() {
-		int price = 0;
-		for (int i = 0; i < A.length; i++) {
-			price += A[i].weight;
-		}
-		return price;
 	}
 }

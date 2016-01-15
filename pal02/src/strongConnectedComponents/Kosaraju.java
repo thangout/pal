@@ -14,7 +14,7 @@ import java.util.Stack;
  */
 public class Kosaraju {
 
-	//predpokládá se orientovaný graf, stím že dolní polovina NEbude symetrická 
+	//predpokládá se orientovaný graf, stím že dolní polovina bude symetrická 
 	//tedy bude tam druhý směr
 	int[][] graph;
 	DFSKosaraju dfs;
@@ -32,7 +32,6 @@ public class Kosaraju {
 		dfs.clearPermanentMark();
 
 		//hrany už jsou otočené při procházení matice
-		//tím že procházím graf po sloupích
 		dfs.startDfsRecursiveComponent();
 
 		dfs.printComponents(graph.length);

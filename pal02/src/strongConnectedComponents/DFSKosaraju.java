@@ -105,7 +105,7 @@ public class DFSKosaraju {
 	}
 
 	void printComponents(int rows) {
-		for (int i = 0; i < componentCounter; i++) {
+		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < graph.length; j++) {
 				if (visited[i][j]) {
 					System.out.print(j + ", ");
